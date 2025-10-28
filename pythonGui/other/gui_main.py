@@ -1,4 +1,4 @@
-from gui_main_window import Ui_guiMainWindow
+from frontend.gui_main_window import Ui_guiMainWindow
 import sys
 from PySide6.QtWidgets import QApplication, QMainWindow
 from PySide6.QtCore import QObject, Signal, QTimer

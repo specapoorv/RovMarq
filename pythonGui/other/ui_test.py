@@ -1,6 +1,6 @@
 import sys
 from PySide6.QtWidgets import QApplication, QMainWindow
-from gui_main_window import Ui_guiMainWindow  # Import your converted UI class
+from frontend.gui_main_window import Ui_guiMainWindow  # Import your converted UI class
 
 class MainWindow(QMainWindow):
     def __init__(self):

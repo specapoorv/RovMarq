@@ -28,9 +28,9 @@ class Ui_guiMainWindow(object):
         guiMainWindow.resize(802, 600)
         self.centralwidget = QWidget(guiMainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
-        self.widget = RoverWheelWidget(self.centralwidget)
-        self.widget.setObjectName(u"widget")
-        self.widget.setGeometry(QRect(90, 70, 301, 421))
+        self.roverwheelwidget = RoverWheelWidget(self.centralwidget)
+        self.roverwheelwidget.setObjectName(u"widget")
+        self.roverwheelwidget.setGeometry(QRect(90, 70, 301, 421))
         self.widget1 = QWidget(self.centralwidget)
         self.widget1.setObjectName(u"widget1")
         self.widget1.setGeometry(QRect(500, 20, 271, 531))
@@ -200,4 +200,3 @@ class Ui_guiMainWindow(object):
         self.canStatusValueLabel.setText(QCoreApplication.translate("guiMainWindow", u"UP", None))
         self.KillSwitchButton.setText(QCoreApplication.translate("guiMainWindow", u"Kill", None))
     # retranslateUi
-

@@ -1,25 +1,28 @@
-import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-// WebSocket Hook (simplified)
 export default function useWebSocket() {
-  const [connectionStatus, setConnectionStatus] = useState('Connected (Demo)');
-  const [telemetryData, setTelemetryData] = useState({
-    gps: '12.9716°N, 77.5946°E',
-    speed: '0.0',
-    battery: 85,
-    signal: 75,
-    altitude: '520.5'
-  });
+  const [connectionStatus, setConnectionStatus] = useState("Disconnected");
+  const [data, setData] = useState(null); // single topic data
 
-  const [scienceData, setScienceData] = useState({
-    temperature: '26.5',
-    humidity: '65',
-    pressure: '1015.2',
-    uvIndex: '5.2',
-    ph: '7.1',
-    conductivity: '450'
-  });
+  useEffect(() => {
+  const ws = new WebSocket("ws://127.0.0.1:8080");
 
-  return { connectionStatus, telemetryData, scienceData };
-};
+    ws.onopen = () => setConnectionStatus("Connected");
+    ws.onclose = () => setConnectionStatus("Disconnected");
+
+    ws.onmessage = (event) => {
+      try {
+        const msg = JSON.parse(event.data);
+        // Only one topic, so we just store msg.data
+        setData(msg);
+      } catch (err) {
+        console.error("Failed to parse WebSocket message:", err);
+      }
+    };
+
+    return () => ws.close();
+  }, []);
+
+  return { connectionStatus, data };
+}
+

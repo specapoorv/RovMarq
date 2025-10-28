@@ -10,7 +10,7 @@ import useWebSocket from './components/useWebSocket';
 // Main App Component
 const App = () => {
   const [activeView, setActiveView] = useState('cameras');
-  const { connectionStatus, telemetryData, scienceData } = useWebSocket();
+  const { connectionStatus, data } = useWebSocket();
 
   const handleEmergencyStop = () => {
     console.log('🚨 EMERGENCY STOP ACTIVATED!');
@@ -84,7 +84,7 @@ const App = () => {
         {activeView === 'science' && (
           <div className="view-container">
             <CameraFeed title="Science Camera" feedId="3" />
-            <ScienceSensors scienceData={scienceData} />
+            <ScienceSensors scienceData={data} />
           </div>
         )}
 
@@ -95,7 +95,7 @@ const App = () => {
         {activeView === 'dashboard' && (
           <div className="view-container">
             <CameraFeed title="Main Camera" feedId="1" />
-            <GPSDisplay gpsData={telemetryData.gps} />
+            <GPSDisplay gpsData={data} />
           </div>
         )}
       </main>

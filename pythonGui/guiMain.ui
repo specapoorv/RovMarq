@@ -6,110 +6,364 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>938</width>
+    <height>640</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(14, 14, 16);</string>
+  </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QGroupBox" name="sensorDataPanel">
+   <widget class="RoverWheelWidget" name="widget" native="true">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>160</y>
-      <width>331</width>
-      <height>151</height>
+      <x>90</x>
+      <y>70</y>
+      <width>301</width>
+      <height>421</height>
      </rect>
     </property>
-    <property name="title">
-     <string>Sensor Data</string>
-    </property>
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="3" column="0">
-      <widget class="QLabel" name="LatencyNameLabel">
-       <property name="text">
-        <string>Latency:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="GPSNameLabel">
-       <property name="text">
-        <string>GPS Coordinates:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="LinearXNameLabel">
-       <property name="text">
-        <string>Linear_x:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLabel" name="GPSValuesLabel">
-       <property name="text">
-        <string>0</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="yawNameLabel">
-       <property name="text">
-        <string>Yaw:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QLabel" name="LinearXValueLabel">
-       <property name="text">
-        <string>0 m/s</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLabel" name="YawValueLabel">
-       <property name="text">
-        <string>0 deg</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QLabel" name="LatencyValueLabel">
-       <property name="text">
-        <string>0 ms</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="batteryNameLabel">
-       <property name="text">
-        <string>Battery:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="1">
-      <widget class="QLabel" name="batteryValueLabel">
-       <property name="text">
-        <string>?</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
    </widget>
-   <widget class="QPushButton" name="KillSwitchButton">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>440</x>
-      <y>340</y>
-      <width>331</width>
-      <height>51</height>
+      <x>500</x>
+      <y>20</y>
+      <width>361</width>
+      <height>531</height>
      </rect>
     </property>
-    <property name="styleSheet">
-     <string notr="true">QPushButton {
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QGroupBox" name="CurrentRoverStatus">
+       <property name="styleSheet">
+        <string notr="true">QGroupBox {
+	border: 2px solid rgb(227, 30, 3);
+	border-radius: 10px;
+	margin-top: 0.5ex;
+	font-size: 24px;
+	font-weight: bold;
+	font: 700 20pt &quot;Uroob&quot;;
+}
+
+QGroupBox::title {
+	color: rgb(227, 30, 3);
+	subcontrol-origin: margin;
+	subcontrol-position: top-left;
+	padding: 0 10px;
+	font-weight: bold;
+}</string>
+       </property>
+       <property name="title">
+        <string>Rover Status</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="0" column="0">
+         <widget class="QLabel" name="modeNameLabel">
+          <property name="styleSheet">
+           <string notr="true">color: rgb(119, 118, 123);
+font: 1000 18pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignCenter;</string>
+          </property>
+          <property name="text">
+           <string>Mode</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="currentSettingNameLabel">
+          <property name="styleSheet">
+           <string notr="true">color: rgb(119, 118, 123);
+font: 1000 18pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignCenter;</string>
+          </property>
+          <property name="text">
+           <string>Config</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLabel" name="label">
+          <property name="styleSheet">
+           <string notr="true">color: rgb(119, 118, 123);
+font: 18pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignCenter;</string>
+          </property>
+          <property name="text">
+           <string>1</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLabel" name="label_2">
+          <property name="styleSheet">
+           <string notr="true">color: rgb(119, 118, 123);
+font: 18pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignCenter;</string>
+          </property>
+          <property name="text">
+           <string>Drive</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="sensorDataPanel">
+       <property name="styleSheet">
+        <string notr="true">QGroupBox {
+	border: 2px solid rgb(227, 30, 3);
+	border-radius: 10px;
+	margin-top: 0.5ex;
+	font-size: 24px;
+	font-weight: bold;
+	font: 700 20pt &quot;Uroob&quot;;
+}
+
+QGroupBox::title {
+	color: rgb(227, 30, 3);
+	subcontrol-origin: margin;
+	subcontrol-position: top-left;
+	padding: 0 10px;
+	font-weight: bold;
+}</string>
+       </property>
+       <property name="title">
+        <string>Sensor Data</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="4" column="0">
+         <widget class="QLabel" name="batteryNameLabel">
+          <property name="styleSheet">
+           <string notr="true">color: rgb(119, 118, 123);
+font: 1000 18pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignCenter;</string>
+          </property>
+          <property name="text">
+           <string>Battery:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QLabel" name="batteryValueLabel">
+          <property name="styleSheet">
+           <string notr="true">color: rgb(119, 118, 123);
+font: 18pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignCenter;</string>
+          </property>
+          <property name="text">
+           <string>?</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="LatencyNameLabel">
+          <property name="styleSheet">
+           <string notr="true">color: rgb(119, 118, 123);
+font: 1000 18pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignCenter;</string>
+          </property>
+          <property name="text">
+           <string>Latency:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLabel" name="LatencyValueLabel">
+          <property name="styleSheet">
+           <string notr="true">color: rgb(119, 118, 123);
+font: 18pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignCenter;</string>
+          </property>
+          <property name="text">
+           <string>0 ms</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="GPSNameLabel">
+          <property name="styleSheet">
+           <string notr="true">color: rgb(119, 118, 123);
+font: 1000 18pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignCenter;</string>
+          </property>
+          <property name="text">
+           <string>GPS Coords</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="LinearXNameLabel">
+          <property name="styleSheet">
+           <string notr="true">color: rgb(119, 118, 123);
+font: 1000 18pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignCenter;</string>
+          </property>
+          <property name="text">
+           <string>Velocity</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLabel" name="YawValueLabel">
+          <property name="styleSheet">
+           <string notr="true">color: rgb(119, 118, 123);
+font: 18pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignCenter;</string>
+          </property>
+          <property name="text">
+           <string>0 deg</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="yawNameLabel">
+          <property name="styleSheet">
+           <string notr="true">color: rgb(119, 118, 123);
+font: 1000 18pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignCenter;</string>
+          </property>
+          <property name="text">
+           <string>Yaw</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLabel" name="LinearXValueLabel">
+          <property name="styleSheet">
+           <string notr="true">color: rgb(119, 118, 123);
+font: 18pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignCenter;</string>
+          </property>
+          <property name="text">
+           <string>0 m/s</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLabel" name="GPSValuesLabel">
+          <property name="styleSheet">
+           <string notr="true">color: rgb(119, 118, 123);
+font: 18pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignCenter;</string>
+          </property>
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="canGroupBox">
+       <property name="styleSheet">
+        <string notr="true">QGroupBox {
+	border: 2px solid rgb(227, 30, 3);
+	border-radius: 10px;
+	margin-top: 0.5ex;
+	font-size: 24px;
+	font-weight: bold;
+	font: 700 20pt &quot;Uroob&quot;;
+}
+
+QGroupBox::title {
+	color: rgb(227, 30, 3);
+	subcontrol-origin: margin;
+	subcontrol-position: top-left;
+	padding: 0 10px;
+	font-weight: bold;
+}</string>
+       </property>
+       <property name="title">
+        <string>CAN</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <widget class="QLabel" name="canStatusNameLabel">
+          <property name="styleSheet">
+           <string notr="true">color: rgb(119, 118, 123);
+font: 1000 18pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignCenter;</string>
+          </property>
+          <property name="text">
+           <string>CAN Status:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QPushButton" name="canSetButton">
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+    background-color: rgb(33, 35, 39);
+    color: rgb(119, 118, 123);
+    font: bold 14px;
+    border-radius: 10px;
+    padding: 10px;
+	font: 700 14pt &quot;FreeMono&quot;;
+}
+
+QPushButton:pressed {
+    background-color: rgb(224, 0, 0); /* When clicked */
+    border-style: inset;
+    padding-left: 2px;
+    padding-top: 2px;
+}
+</string>
+          </property>
+          <property name="text">
+           <string>SET</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QPushButton" name="canResetButton">
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+    background-color: rgb(33, 35, 39);
+    color: rgb(119, 118, 123);
+    font: bold 14px;
+    border-radius: 10px;
+    padding: 10px;
+	font: 700 14pt &quot;FreeMono&quot;;
+}
+
+QPushButton:pressed {
+    background-color: rgb(224, 0, 0); /* When clicked */
+    border-style: inset;
+    padding-left: 2px;
+    padding-top: 2px;
+}
+</string>
+          </property>
+          <property name="text">
+           <string>RESET</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLabel" name="canStatusValueLabel">
+          <property name="styleSheet">
+           <string notr="true">color: rgb(119, 118, 123);
+font: 18pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignCenter;</string>
+          </property>
+          <property name="text">
+           <string>UP</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="KillSwitchButton">
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
     background-color: rgb(246, 11, 11);
     color: white;
     border-radius: 8px;
@@ -121,49 +375,9 @@ QPushButton:hover {
     background-color: #45a049;
 }
 </string>
-    </property>
-    <property name="text">
-     <string>Kill</string>
-    </property>
-   </widget>
-   <widget class="QGroupBox" name="canGroupBox">
-    <property name="geometry">
-     <rect>
-      <x>440</x>
-      <y>160</y>
-      <width>331</width>
-      <height>161</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>CAN</string>
-    </property>
-    <layout class="QGridLayout" name="gridLayout_2">
-     <item row="0" column="0">
-      <widget class="QLabel" name="canStatusNameLabel">
-       <property name="text">
-        <string>CAN Status:</string>
        </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLabel" name="canStatusValueLabel">
        <property name="text">
-        <string>UP</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QPushButton" name="canSetButton">
-       <property name="text">
-        <string>CAN Set</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QPushButton" name="canResetButton">
-       <property name="text">
-        <string>CAN Reset</string>
+        <string>Kill</string>
        </property>
       </widget>
      </item>
@@ -172,6 +386,14 @@ QPushButton:hover {
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>RoverWheelWidget</class>
+   <extends>QWidget</extends>
+   <header>components.RoverWheelWidget</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

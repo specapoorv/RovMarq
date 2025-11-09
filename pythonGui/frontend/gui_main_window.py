@@ -26,7 +26,7 @@ class Ui_guiMainWindow(object):
         if not guiMainWindow.objectName():
             guiMainWindow.setObjectName(u"guiMainWindow")
         guiMainWindow.resize(938, 640)
-        guiMainWindow.setStyleSheet(u"background-color: rgb(14, 14, 16);")
+        guiMainWindow.setStyleSheet(u"background-color: rgb(24, 24, 29);")
         self.centralwidget = QWidget(guiMainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.widget = RoverWheelWidget(self.centralwidget)

@@ -19,6 +19,7 @@ from PySide6.QtWidgets import (QApplication, QGridLayout, QGroupBox, QLabel,
     QMainWindow, QPushButton, QSizePolicy, QStatusBar,
     QVBoxLayout, QWidget)
 
+from components.BatteryProgressBar import BatteryProgressBar
 from components.RoverWheelWidget import RoverWheelWidget
 
 class Ui_guiMainWindow(object):
@@ -121,14 +122,6 @@ class Ui_guiMainWindow(object):
 
         self.gridLayout.addWidget(self.batteryNameLabel, 4, 0, 1, 1)
 
-        self.batteryValueLabel = QLabel(self.sensorDataPanel)
-        self.batteryValueLabel.setObjectName(u"batteryValueLabel")
-        self.batteryValueLabel.setStyleSheet(u"color: rgb(119, 118, 123);\n"
-"font: 18pt \"FreeMono\";\n"
-"qproperty-alignment: AlignCenter;")
-
-        self.gridLayout.addWidget(self.batteryValueLabel, 4, 1, 1, 1)
-
         self.LatencyNameLabel = QLabel(self.sensorDataPanel)
         self.LatencyNameLabel.setObjectName(u"LatencyNameLabel")
         self.LatencyNameLabel.setStyleSheet(u"color: rgb(119, 118, 123);\n"
@@ -193,6 +186,27 @@ class Ui_guiMainWindow(object):
 
         self.gridLayout.addWidget(self.GPSValuesLabel, 0, 1, 1, 1)
 
+        self.batteryProgressBar = BatteryProgressBar(self.sensorDataPanel)
+        self.batteryProgressBar.setObjectName(u"batteryProgressBar")
+        self.batteryProgressBar.setStyleSheet(u"QProgressBar {\n"
+"    border: 2px solid grey;\n"
+"    border-radius: 5px;\n"
+"	border-color: rgb(119, 118, 123);\n"
+"    text-align: center;\n"
+"    background-color: rgb(26, 28, 32);	\n"
+"	font: 600 12pt \"FreeMono\";\n"
+"	/*color: rgb(119, 118, 123);*/\n"
+"}\n"
+"\n"
+"QProgressBar::chunk {\n"
+"    background-color: rgb(250, 118, 23);\n"
+"    width: 20px;\n"
+"}\n"
+"")
+        self.batteryProgressBar.setValue(24)
+
+        self.gridLayout.addWidget(self.batteryProgressBar, 4, 1, 1, 1)
+
 
         self.verticalLayout.addWidget(self.sensorDataPanel)
 
@@ -236,7 +250,8 @@ class Ui_guiMainWindow(object):
 "}\n"
 "\n"
 "QPushButton:pressed {\n"
-"    background-color: rgb(224, 0, 0); /* When clicked */\n"
+"    background-color: rgb(119, 118, 123);\n"
+"	color: rgb(244, 37, 14);\n"
 "    border-style: inset;\n"
 "    padding-left: 2px;\n"
 "    padding-top: 2px;\n"
@@ -257,7 +272,8 @@ class Ui_guiMainWindow(object):
 "}\n"
 "\n"
 "QPushButton:pressed {\n"
-"    background-color: rgb(224, 0, 0); /* When clicked */\n"
+"    background-color: rgb(119, 118, 123);\n"
+"	color: rgb(244, 37, 14);\n"
 "    border-style: inset;\n"
 "    padding-left: 2px;\n"
 "    padding-top: 2px;\n"
@@ -312,9 +328,8 @@ class Ui_guiMainWindow(object):
         self.label.setText(QCoreApplication.translate("guiMainWindow", u"1", None))
         self.label_2.setText(QCoreApplication.translate("guiMainWindow", u"Drive", None))
         self.sensorDataPanel.setTitle(QCoreApplication.translate("guiMainWindow", u"Sensor Data", None))
-        self.batteryNameLabel.setText(QCoreApplication.translate("guiMainWindow", u"Battery:", None))
-        self.batteryValueLabel.setText(QCoreApplication.translate("guiMainWindow", u"?", None))
-        self.LatencyNameLabel.setText(QCoreApplication.translate("guiMainWindow", u"Latency:", None))
+        self.batteryNameLabel.setText(QCoreApplication.translate("guiMainWindow", u"SOC", None))
+        self.LatencyNameLabel.setText(QCoreApplication.translate("guiMainWindow", u"Latency", None))
         self.LatencyValueLabel.setText(QCoreApplication.translate("guiMainWindow", u"0 ms", None))
         self.GPSNameLabel.setText(QCoreApplication.translate("guiMainWindow", u"GPS Coords", None))
         self.LinearXNameLabel.setText(QCoreApplication.translate("guiMainWindow", u"Velocity", None))

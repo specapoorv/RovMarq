@@ -30,9 +30,9 @@ class Ui_guiMainWindow(object):
         guiMainWindow.setStyleSheet(u"background-color: rgb(24, 24, 29);")
         self.centralwidget = QWidget(guiMainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
-        self.widget = RoverWheelWidget(self.centralwidget)
-        self.widget.setObjectName(u"widget")
-        self.widget.setGeometry(QRect(90, 70, 301, 421))
+        self.roverwheelwidget = RoverWheelWidget(self.centralwidget)
+        self.roverwheelwidget.setObjectName(u"roverwheelwidget")
+        self.roverwheelwidget.setGeometry(QRect(90, 70, 301, 421))
         self.layoutWidget = QWidget(self.centralwidget)
         self.layoutWidget.setObjectName(u"layoutWidget")
         self.layoutWidget.setGeometry(QRect(500, 20, 361, 531))
@@ -114,54 +114,6 @@ class Ui_guiMainWindow(object):
 "}")
         self.gridLayout = QGridLayout(self.sensorDataPanel)
         self.gridLayout.setObjectName(u"gridLayout")
-        self.batteryNameLabel = QLabel(self.sensorDataPanel)
-        self.batteryNameLabel.setObjectName(u"batteryNameLabel")
-        self.batteryNameLabel.setStyleSheet(u"color: rgb(119, 118, 123);\n"
-"font: 1000 18pt \"FreeMono\";\n"
-"qproperty-alignment: AlignCenter;")
-
-        self.gridLayout.addWidget(self.batteryNameLabel, 4, 0, 1, 1)
-
-        self.LatencyNameLabel = QLabel(self.sensorDataPanel)
-        self.LatencyNameLabel.setObjectName(u"LatencyNameLabel")
-        self.LatencyNameLabel.setStyleSheet(u"color: rgb(119, 118, 123);\n"
-"font: 1000 18pt \"FreeMono\";\n"
-"qproperty-alignment: AlignCenter;")
-
-        self.gridLayout.addWidget(self.LatencyNameLabel, 3, 0, 1, 1)
-
-        self.LatencyValueLabel = QLabel(self.sensorDataPanel)
-        self.LatencyValueLabel.setObjectName(u"LatencyValueLabel")
-        self.LatencyValueLabel.setStyleSheet(u"color: rgb(119, 118, 123);\n"
-"font: 18pt \"FreeMono\";\n"
-"qproperty-alignment: AlignCenter;")
-
-        self.gridLayout.addWidget(self.LatencyValueLabel, 3, 1, 1, 1)
-
-        self.GPSNameLabel = QLabel(self.sensorDataPanel)
-        self.GPSNameLabel.setObjectName(u"GPSNameLabel")
-        self.GPSNameLabel.setStyleSheet(u"color: rgb(119, 118, 123);\n"
-"font: 1000 18pt \"FreeMono\";\n"
-"qproperty-alignment: AlignCenter;")
-
-        self.gridLayout.addWidget(self.GPSNameLabel, 0, 0, 1, 1)
-
-        self.LinearXNameLabel = QLabel(self.sensorDataPanel)
-        self.LinearXNameLabel.setObjectName(u"LinearXNameLabel")
-        self.LinearXNameLabel.setStyleSheet(u"color: rgb(119, 118, 123);\n"
-"font: 1000 18pt \"FreeMono\";\n"
-"qproperty-alignment: AlignCenter;")
-
-        self.gridLayout.addWidget(self.LinearXNameLabel, 2, 0, 1, 1)
-
-        self.YawValueLabel = QLabel(self.sensorDataPanel)
-        self.YawValueLabel.setObjectName(u"YawValueLabel")
-        self.YawValueLabel.setStyleSheet(u"color: rgb(119, 118, 123);\n"
-"font: 18pt \"FreeMono\";\n"
-"qproperty-alignment: AlignCenter;")
-
-        self.gridLayout.addWidget(self.YawValueLabel, 1, 1, 1, 1)
-
         self.yawNameLabel = QLabel(self.sensorDataPanel)
         self.yawNameLabel.setObjectName(u"yawNameLabel")
         self.yawNameLabel.setStyleSheet(u"color: rgb(119, 118, 123);\n"
@@ -170,13 +122,13 @@ class Ui_guiMainWindow(object):
 
         self.gridLayout.addWidget(self.yawNameLabel, 1, 0, 1, 1)
 
-        self.LinearXValueLabel = QLabel(self.sensorDataPanel)
-        self.LinearXValueLabel.setObjectName(u"LinearXValueLabel")
-        self.LinearXValueLabel.setStyleSheet(u"color: rgb(119, 118, 123);\n"
-"font: 18pt \"FreeMono\";\n"
+        self.LatencyNameLabel = QLabel(self.sensorDataPanel)
+        self.LatencyNameLabel.setObjectName(u"LatencyNameLabel")
+        self.LatencyNameLabel.setStyleSheet(u"color: rgb(119, 118, 123);\n"
+"font: 1000 18pt \"FreeMono\";\n"
 "qproperty-alignment: AlignCenter;")
 
-        self.gridLayout.addWidget(self.LinearXValueLabel, 2, 1, 1, 1)
+        self.gridLayout.addWidget(self.LatencyNameLabel, 2, 0, 1, 1)
 
         self.GPSValuesLabel = QLabel(self.sensorDataPanel)
         self.GPSValuesLabel.setObjectName(u"GPSValuesLabel")
@@ -185,6 +137,14 @@ class Ui_guiMainWindow(object):
 "qproperty-alignment: AlignCenter;")
 
         self.gridLayout.addWidget(self.GPSValuesLabel, 0, 1, 1, 1)
+
+        self.GPSNameLabel = QLabel(self.sensorDataPanel)
+        self.GPSNameLabel.setObjectName(u"GPSNameLabel")
+        self.GPSNameLabel.setStyleSheet(u"color: rgb(119, 118, 123);\n"
+"font: 1000 18pt \"FreeMono\";\n"
+"qproperty-alignment: AlignCenter;")
+
+        self.gridLayout.addWidget(self.GPSNameLabel, 0, 0, 1, 1)
 
         self.batteryProgressBar = BatteryProgressBar(self.sensorDataPanel)
         self.batteryProgressBar.setObjectName(u"batteryProgressBar")
@@ -205,7 +165,31 @@ class Ui_guiMainWindow(object):
 "")
         self.batteryProgressBar.setValue(24)
 
-        self.gridLayout.addWidget(self.batteryProgressBar, 4, 1, 1, 1)
+        self.gridLayout.addWidget(self.batteryProgressBar, 3, 1, 1, 1)
+
+        self.batteryNameLabel = QLabel(self.sensorDataPanel)
+        self.batteryNameLabel.setObjectName(u"batteryNameLabel")
+        self.batteryNameLabel.setStyleSheet(u"color: rgb(119, 118, 123);\n"
+"font: 1000 18pt \"FreeMono\";\n"
+"qproperty-alignment: AlignCenter;")
+
+        self.gridLayout.addWidget(self.batteryNameLabel, 3, 0, 1, 1)
+
+        self.LatencyValueLabel = QLabel(self.sensorDataPanel)
+        self.LatencyValueLabel.setObjectName(u"LatencyValueLabel")
+        self.LatencyValueLabel.setStyleSheet(u"color: rgb(119, 118, 123);\n"
+"font: 18pt \"FreeMono\";\n"
+"qproperty-alignment: AlignCenter;")
+
+        self.gridLayout.addWidget(self.LatencyValueLabel, 2, 1, 1, 1)
+
+        self.YawValueLabel = QLabel(self.sensorDataPanel)
+        self.YawValueLabel.setObjectName(u"YawValueLabel")
+        self.YawValueLabel.setStyleSheet(u"color: rgb(119, 118, 123);\n"
+"font: 18pt \"FreeMono\";\n"
+"qproperty-alignment: AlignCenter;")
+
+        self.gridLayout.addWidget(self.YawValueLabel, 1, 1, 1, 1)
 
 
         self.verticalLayout.addWidget(self.sensorDataPanel)
@@ -328,15 +312,13 @@ class Ui_guiMainWindow(object):
         self.label.setText(QCoreApplication.translate("guiMainWindow", u"1", None))
         self.label_2.setText(QCoreApplication.translate("guiMainWindow", u"Drive", None))
         self.sensorDataPanel.setTitle(QCoreApplication.translate("guiMainWindow", u"Sensor Data", None))
-        self.batteryNameLabel.setText(QCoreApplication.translate("guiMainWindow", u"SOC", None))
-        self.LatencyNameLabel.setText(QCoreApplication.translate("guiMainWindow", u"Latency", None))
-        self.LatencyValueLabel.setText(QCoreApplication.translate("guiMainWindow", u"0 ms", None))
-        self.GPSNameLabel.setText(QCoreApplication.translate("guiMainWindow", u"GPS Coords", None))
-        self.LinearXNameLabel.setText(QCoreApplication.translate("guiMainWindow", u"Velocity", None))
-        self.YawValueLabel.setText(QCoreApplication.translate("guiMainWindow", u"0 deg", None))
         self.yawNameLabel.setText(QCoreApplication.translate("guiMainWindow", u"Yaw", None))
-        self.LinearXValueLabel.setText(QCoreApplication.translate("guiMainWindow", u"0 m/s", None))
+        self.LatencyNameLabel.setText(QCoreApplication.translate("guiMainWindow", u"Latency", None))
         self.GPSValuesLabel.setText(QCoreApplication.translate("guiMainWindow", u"0", None))
+        self.GPSNameLabel.setText(QCoreApplication.translate("guiMainWindow", u"GPS Coords", None))
+        self.batteryNameLabel.setText(QCoreApplication.translate("guiMainWindow", u"SOC", None))
+        self.LatencyValueLabel.setText(QCoreApplication.translate("guiMainWindow", u"0 ms", None))
+        self.YawValueLabel.setText(QCoreApplication.translate("guiMainWindow", u"0 deg", None))
         self.canGroupBox.setTitle(QCoreApplication.translate("guiMainWindow", u"CAN", None))
         self.canStatusNameLabel.setText(QCoreApplication.translate("guiMainWindow", u"CAN Status:", None))
         self.canSetButton.setText(QCoreApplication.translate("guiMainWindow", u"SET", None))

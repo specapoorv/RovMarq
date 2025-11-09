@@ -48,6 +48,7 @@ class ROSQtBridge(Node, QObject):
 
 
     def gps_callback(self, msg: NavSatFix):
+        
         self.gps_updated.emit(msg.latitude, msg.longitude)
 
     def imu_callback(self, msg: Imu):

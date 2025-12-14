@@ -34,7 +34,7 @@ class ROSQtBridge(Node, QObject):
         Node.__init__(self, "ros_qt_bridge")
         QObject.__init__(self)
 
-        self.create_subscription(NavSatFix, "/gps_topic", self.gps_callback, 10)
+        self.create_subscription(NavSatFix, "/gps/fix", self.gps_callback, 10)
         #fix imu to take from odom
         self.create_subscription(Imu, "/imu_topic", self.imu_callback, 10)
         self.create_subscription(Float32, "/battery_topic", self.battery_callback, 10)

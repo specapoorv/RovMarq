@@ -36,16 +36,16 @@ def main():
 
 
     bridge.gps_updated.connect(window.update_gps)
-    bridge.yaw_updated.connect(window.update_yaw)
+    bridge.odom_updated.connect(window.update_odom)
     bridge.battery_updated.connect(window.update_battery)
-    bridge.latency_updated.connect(window.update_latency)
-    bridge.can_status.connect(window.update_can_status)
+    # bridge.latency_updated.connect(window.update_latency)
     bridge.steering_angles.connect(window.ui.roverwheelwidget.set_wheel_angles)
-
-
+    bridge.mode_updated.connect(window.update_mode)
+    bridge.config_updated.connect(window.update_config)
+    bridge.twist_updated.connect(window.update_twist)
+    bridge.encoder_angles_updated.connect(window.update_encoder_angles)
 
     window.kill_signal.connect(bridge.kill_handler) #for kill switch
-    window.can_setting.connect(bridge.can_handler) #for can
 
     # #async writing 
     # bridge.gps_updated.connect(lambda lat, lon: influx_writer.enqueue({
@@ -91,10 +91,7 @@ def main():
     # influx_writer.stop()
     bridge.destroy_node()
     rclpy.shutdown()
-
     sys.exit(exit_code)
-
-    
 
 
 if __name__ == "__main__":

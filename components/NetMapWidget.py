@@ -4,11 +4,11 @@ from PySide6.QtGui import QPainter, QColor
 import subprocess
 
 DEVICES = [
-    {"name": "Base Mikrotik", "ip": "10.42.0.99"},
-    {"name": "Rover Mikrotik", "ip": "10.42.0.100"},
+    {"name": "Rover Mikrotik", "ip": "10.42.0.99"},
+    {"name": "Base Mikrotik", "ip": "10.42.0.100"},
     {"name": "Jetson Orin", "ip": "10.42.0.253"},
     {"name": "Imou Camera", "ip": "10.42.0.69"},
-    # {"name": "Adeesh's Laptop", "ip": "10.42.0.7"},
+    {"name": "Xavier", "ip": "10.42.0.51"},
     # {"name": "Shri Hari's Laptop", "ip": "10.42.0.2"},
     # {"name": "Srivatsan's Laptop", "ip": "10.42.0.254"},
     # {"name": "Ananth's Laptop", "ip": "10.42.0.11"},

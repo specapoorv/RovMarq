@@ -1,9 +1,9 @@
 from frontend.gui_main_window import Ui_guiMainWindow
-from PySide6.QtWidgets import QApplication, QMainWindow
+from PySide6.QtWidgets import QApplication, QMainWindow, QHeaderView
 from PySide6.QtCore import Signal
 import os
 from PySide6.QtCore import QUrl
-
+from components.csvFileComponent import csvFileComponent
 
 class MainWindow(QMainWindow):  
     kill_signal = Signal(bool)
@@ -19,6 +19,13 @@ class MainWindow(QMainWindow):
         self.ui.KillSwitchButton.clicked.connect(self.kill_switch_clicked)
         # build absolute path relative to this file
         self.ui.webEngineView.load(QUrl("http://localhost:8000/map.html"))
+        
+        # CSV viewer
+        self.csv_file_path = "/home/ananth/adeesh.csv"
+        self.csv_viewer = csvFileComponent(self.csv_file_path)
+        self.ui.csvFile.setModel(self.csv_viewer)
+        header = self.ui.csvFile.horizontalHeader()
+        header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
 
     # Updater functions
     def update_gps(self, latitude, longitude):

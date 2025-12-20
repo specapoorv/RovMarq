@@ -44,6 +44,10 @@ def main():
     bridge.config_updated.connect(window.update_config)
     bridge.twist_updated.connect(window.update_twist)
     bridge.encoder_angles_updated.connect(window.update_encoder_angles)
+    bridge.start_csv_watcher("/home/specapoorv/pythonGui/waypoints.csv")
+    bridge.csv_changed.connect(window.load_waypoints)
+
+
 
     window.kill_signal.connect(bridge.kill_handler) #for kill switch
 

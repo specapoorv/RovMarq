@@ -1,11 +1,11 @@
 from frontend.gui_main_window import Ui_guiMainWindow
-from PySide6.QtWidgets import QApplication, QMainWindow
-from PySide6.QtCore import Signal
-import os
-from PySide6.QtCore import QUrl
+from PySide6.QtWidgets import QMainWindow
+from PySide6.QtCore import Signal, QUrl
+import csv
+import json
 
 
-class MainWindow(QMainWindow):  
+class MainWindow(QMainWindow):
     kill_signal = Signal(bool)
 
     def __init__(self):
@@ -13,22 +13,55 @@ class MainWindow(QMainWindow):
         self.ui = Ui_guiMainWindow()
         self.ui.setupUi(self)
 
-        self.kill_variable = False
-
         # Buttons
         self.ui.KillSwitchButton.clicked.connect(self.kill_switch_clicked)
-        # build absolute path relative to this file
-        self.ui.webEngineView.load(QUrl("http://localhost:8000/map.html"))
 
-    # Updater functions
+        # Load Leaflet map
+        self.ui.webEngineView.load(QUrl("http://localhost:8000/map.html"))
+        self.ui.webEngineView.loadFinished.connect(self.on_map_loaded)
+
+    # ===============================
+    # MAP / WAYPOINT HANDLING
+    # ===============================
+
+    def on_map_loaded(self):
+        print("Map loaded, loading waypoints")
+        self.load_waypoints("/home/specapoorv/pythonGui/waypoints.csv")
+
+    def load_waypoints(self, csv_path):
+        waypoints = []
+        try:
+            with open(csv_path, "r") as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    waypoints.append({
+                        "lat": float(row["lat"]),
+                        "lon": float(row["lon"]),
+                        "label": row.get("label", "")
+                    })
+
+            js = f"""
+            clearMarkers();
+            addMarkers({json.dumps(waypoints)});
+            """
+            self.ui.webEngineView.page().runJavaScript(js)
+
+        except Exception as e:
+            print("Error loading waypoints:", e)
+
+    # ===============================
+    # ROS → UI UPDATERS
+    # ===============================
+
     def update_gps(self, latitude, longitude):
         self.ui.GPSValuesLabel.setText(f"{latitude:.6f}, {longitude:.6f}")
-        self.ui.webEngineView.page().runJavaScript(f"updateRover({latitude}, {longitude});")
+        self.ui.webEngineView.page().runJavaScript(
+            f"updateRover({latitude}, {longitude});"
+        )
 
-    
     def update_odom(self, x, y, yaw):
         self.ui.OdomValueLabel.setText(f"{x:.2f} {y:.2f} {yaw:.2f}")
-    
+
     def update_battery(self, battery):
         # self.ui.batteryValueLabel.setText(f"{battery:.2f}%")
         pass
@@ -49,8 +82,10 @@ class MainWindow(QMainWindow):
         self.ui.BackLeftEncoderText.setText(f"{bl}")
         self.ui.BackRightEncoderText.setText(f"{br}")
 
-    # Buttons functions
+    # ===============================
+    # UI ACTIONS
+    # ===============================
+
     def kill_switch_clicked(self):
         print("killing signal initiated")
         self.kill_signal.emit(True)
-        pass

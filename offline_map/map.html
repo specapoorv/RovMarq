@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Offline Leaflet Map</title>
+  <title>Offline Leaflet Map with Dynamic Markers</title>
 
   <!-- Leaflet local -->
   <link rel="stylesheet" href="leaflet/dist/leaflet.css" />
@@ -14,6 +14,22 @@
       width: 100%;
       margin: 0;
     }
+
+    /* Marker container */
+    .marker-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    .marker-label {
+      margin-top: 2px;
+      color: white;
+      font-weight: bold;
+      text-shadow: 0 0 3px black;
+    }
   </style>
 </head>
 
@@ -21,48 +37,125 @@
   <div id="map"></div>
 
   <script>
-    // Create map
+    /* ===============================
+       🗺️ MAP SETUP
+    =============================== */
     var map = L.map("map", {
       minZoom: 2,
-      maxZoom: 16
+      maxZoom: 24
     }).setView([12.9716, 77.5946], 15);
 
-    // OFFLINE TILE LAYER (your MOBAC tiles)
-    L.tileLayer(
-      "OSMPublicTransport/{z}/{x}/{y}png.tile",
-      {
-        minZoom: 2,
-        maxZoom: 16,
-        attribution: "Offline OSM (MOBAC)"
-      }
-    ).addTo(map);
+    L.tileLayer('OSMPublicTransport/{z}/{x}/{y}.png', {
+      maxZoom: 24,        // how far user can zoom
+      maxNativeZoom: 19,  // highest zoom level that EXISTS
+      minZoom: 0,
+      attribution: 'ANVESHAK'
+    }).addTo(map);
+
 
     /* ===============================
-       🆕 ROVER MARKER ADDITION
-       =============================== */
+       🖼️ ICON DEFINITIONS
+    =============================== */
+    var iconImages = {
+      "rover": "icons/rover_icon1.png",
 
-    // Rover icon (put rover.png next to map.html)
-    var roverIcon = L.icon({
-      iconUrl: "rover_icon1.png",
-      iconSize: [40, 40],
-      iconAnchor: [20, 20]
-    });
+      // 🔺 Cones
+      "red_cone": "icons/red_cone.png",
+      "yellow_cone": "icons/yellow_cone.png",
+      "blue_cone": "icons/blue_cone.png",
+      "green_cone": "icons/green_cone.png",
+      "orange_cone": "icons/orange_cone.png",
+      "purple_cone": "icons/purple_cone.png",
+      "unknown_cone": "icons/gray_cone.png",
 
-    // Create rover marker (initial position)
+      "red_waypoint": "icons/red_waypoint.png",
+      "yellow_waypoint": "icons/yellow_waypoint.png",
+      "blue_waypoint": "icons/blue_waypoint.png",
+      "green_waypoint": "icons/green_waypoint.png",
+      "orange_waypoint": "icons/orange_waypoint.png",
+      "purple_waypoint": "icons/purple_waypoint.png",
+      "unknown_waypoint": "icons/gray_waypoint.png"
+    };
+
+    var markers = [];
+
+    function createIcon(label, zoom) {
+      // Show gray cone if label is missing or NaN
+      if (!label || label === "NaN") {
+        label = "gray_cone";
+      }
+
+      var baseSize = (label === "rover") ? 18 : 12;
+      var scale = zoom / 15;
+      scale = Math.max(0.6, Math.min(scale, 1.4));
+
+      var size = baseSize * scale;
+      var fontSize = 10 * scale;
+      var iconUrl = iconImages[label] || iconImages["gray_cone"];
+
+      var html = `
+        <div class="marker-container">
+          <img src="${iconUrl}" style="width:${size}px; height:${size}px;" />
+          <div class="marker-label" style="font-size:${fontSize}px;">
+            ${label}
+          </div>
+        </div>
+      `;
+
+      return L.divIcon({
+        html: html,
+        className: "",
+        iconSize: [size, size + fontSize + 4],
+        iconAnchor: [size / 2, size / 2]
+      });
+    }
+
+
     var roverMarker = L.marker(
       [12.9716, 77.5946],
-      { icon: roverIcon }
+      { icon: createIcon("rover", map.getZoom()) }
     ).addTo(map);
 
-    // 🔥 FUNCTION CALLED FROM Qt
     function updateRover(lat, lon) {
       roverMarker.setLatLng([lat, lon]);
       map.panTo([lat, lon], { animate: true });
     }
 
-    // Expose function globally
+    function addMarkers(markerList) {
+      markerList.forEach(m => {
+        var marker = L.marker(
+          [m.lat, m.lon],
+          { icon: createIcon(m.label, map.getZoom()) }
+        ).addTo(map);
+
+        markers.push({ marker: marker, label: m.label });
+      });
+    }
+
+    function clearMarkers() {
+      markers.forEach(m => map.removeLayer(m.marker));
+      markers = [];
+    }
+
+
+    map.on('zoomend', function() {
+      var zoom = map.getZoom();
+
+      roverMarker.setIcon(createIcon("rover", zoom));
+
+      markers.forEach(m => {
+        m.marker.setIcon(createIcon(m.label, zoom));
+      });
+    });
+
+    /* ===============================
+       🌍 EXPOSE TO QT
+    =============================== */
     window.updateRover = updateRover;
+    window.addMarkers = addMarkers;
+    window.clearMarkers = clearMarkers;
     window.map = map;
+
   </script>
 </body>
 </html>

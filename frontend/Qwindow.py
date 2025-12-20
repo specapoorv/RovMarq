@@ -4,6 +4,11 @@ from PySide6.QtCore import Signal, QUrl
 import csv
 import json
 
+from PySide6.QtWidgets import QApplication, QMainWindow, QHeaderView
+from PySide6.QtCore import Signal
+import os
+from PySide6.QtCore import QUrl
+from components.csvFileComponent import csvFileComponent
 
 class MainWindow(QMainWindow):
     kill_signal = Signal(bool)
@@ -15,6 +20,15 @@ class MainWindow(QMainWindow):
 
         # Buttons
         self.ui.KillSwitchButton.clicked.connect(self.kill_switch_clicked)
+        # build absolute path relative to this file
+        self.ui.webEngineView.load(QUrl("http://localhost:8000/map.html"))
+        
+        # CSV viewer
+        self.csv_file_path = "/home/ananth/adeesh.csv"
+        self.csv_viewer = csvFileComponent(self.csv_file_path)
+        self.ui.csvFile.setModel(self.csv_viewer)
+        header = self.ui.csvFile.horizontalHeader()
+        header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
 
         # Load Leaflet map
         self.ui.webEngineView.load(QUrl("http://localhost:8000/map.html"))

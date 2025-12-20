@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1045</width>
+    <width>1204</width>
     <height>953</height>
    </rect>
   </property>
@@ -441,6 +441,40 @@ background-color: transparent;</string>
      <url>
       <string>about:blank</string>
      </url>
+    </property>
+   </widget>
+   <widget class="QTableView" name="csvFile">
+    <property name="geometry">
+     <rect>
+      <x>850</x>
+      <y>20</y>
+      <width>321</width>
+      <height>231</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QTableView {            
+    gridline-color: transparent;        /* Grid lines between cells */
+    selection-color: rgb(119, 118, 123);          /* Selected cell text */
+    border: 2px solid rgb(227, 30, 3);          /* Border around entire table */
+	font: 1000 10pt &quot;FreeMono&quot;;
+}
+
+QTableView:item {
+	color: rgb(227, 30, 3); 
+}
+
+QTableView::item:selected {
+    background-color: rgb(227, 30, 3);
+    color: rgb(119, 118, 123);                      
+}
+
+QHeaderView::section {
+    background-color: rgb(119, 118, 123);        /* Background color */
+   	color: rgb(24, 24, 29);                   /* Text color */
+	font: 1200 12pt &quot;FreeMono&quot;;
+    text-align: center;               /* Text alignment */
+}</string>
     </property>
    </widget>
   </widget>

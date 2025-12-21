@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Offline Leaflet Map with Dynamic Markers</title>
+  <title>Offline Leaflet Map with Pre-rotated Rover</title>
 
   <!-- Leaflet local -->
   <link rel="stylesheet" href="leaflet/dist/leaflet.css" />
@@ -15,7 +15,6 @@
       margin: 0;
     }
 
-    /* Marker container */
     .marker-container {
       display: flex;
       flex-direction: column;
@@ -37,29 +36,27 @@
   <div id="map"></div>
 
   <script>
+    console.log("Map loading with pre-rotated rover images...");
+
     /* ===============================
        🗺️ MAP SETUP
     =============================== */
     var map = L.map("map", {
       minZoom: 2,
       maxZoom: 24
-    }).setView([12.9716, 77.5946], 15);
+    }).setView([12.991600, 80.234600], 16);
 
     L.tileLayer('OSMPublicTransport/{z}/{x}/{y}.png', {
-      maxZoom: 24,        // how far user can zoom
-      maxNativeZoom: 19,  // highest zoom level that EXISTS
+      maxZoom: 24,
+      maxNativeZoom: 19,
       minZoom: 0,
       attribution: 'ANVESHAK'
     }).addTo(map);
-
 
     /* ===============================
        🖼️ ICON DEFINITIONS
     =============================== */
     var iconImages = {
-      "rover": "icons/rover_icon1.png",
-
-      // 🔺 Cones
       "red_cone": "icons/red_cone.png",
       "yellow_cone": "icons/yellow_cone.png",
       "blue_cone": "icons/blue_cone.png",
@@ -67,7 +64,6 @@
       "orange_cone": "icons/orange_cone.png",
       "purple_cone": "icons/purple_cone.png",
       "unknown_cone": "icons/gray_cone.png",
-
       "red_waypoint": "icons/red_waypoint.png",
       "yellow_waypoint": "icons/yellow_waypoint.png",
       "blue_waypoint": "icons/blue_waypoint.png",
@@ -78,14 +74,35 @@
     };
 
     var markers = [];
+    var currentYaw = 0;
+
+    /* ===============================
+       🔄 ROVER ANGLE FUNCTIONS
+    =============================== */
+    
+    // Get the closest rover image for a given angle
+    function getRoverImageForAngle(angleDeg) {
+      // Normalize angle to 0-359
+      angleDeg = ((angleDeg % 360) + 360) % 360;
+      
+      // Round to nearest 10 degrees
+      var roundedAngle = Math.round(angleDeg / 10) * 10;
+      
+      // Handle 360 -> 0
+      if (roundedAngle >= 360) roundedAngle = 0;
+      
+      // Format with leading zeros (000, 010, 020, etc.)
+      var angleStr = String(roundedAngle).padStart(3, '0');
+      
+      return `icons/rover_angles/rover_${angleStr}.png`;
+    }
 
     function createIcon(label, zoom) {
-      // Show gray cone if label is missing or NaN
       if (!label || label === "NaN") {
         label = "gray_cone";
       }
 
-      var baseSize = (label === "rover") ? 18 : 12;
+      var baseSize = 12;
       var scale = zoom / 15;
       scale = Math.max(0.6, Math.min(scale, 1.4));
 
@@ -110,18 +127,56 @@
       });
     }
 
+    function createRoverIcon(zoom, angleDeg) {
+      var baseSize = 24;
+      var scale = zoom / 15;
+      scale = Math.max(0.6, Math.min(scale, 1.4));
+      var size = baseSize * scale;
 
+      // Get the appropriate pre-rotated image
+      var iconUrl = getRoverImageForAngle(angleDeg);
+
+      return L.icon({
+        iconUrl: iconUrl,
+        iconSize: [size, size],
+        iconAnchor: [size / 2, size / 2]
+      });
+    }
+
+    // Create rover marker
     var roverMarker = L.marker(
-      [12.9716, 77.5946],
-      { icon: createIcon("rover", map.getZoom()) }
+      [12.991500, 80.234600],
+      { icon: createRoverIcon(map.getZoom(), 0) }
     ).addTo(map);
 
-    function updateRover(lat, lon) {
+    console.log("✓ Rover marker created with pre-rotated images");
+
+    /* ===============================
+       🎯 UPDATE FUNCTIONS
+    =============================== */
+
+    function updateRoverPosition(lat, lon) {
+      console.log(`updateRoverPosition: lat=${lat}, lon=${lon}`);
       roverMarker.setLatLng([lat, lon]);
       map.panTo([lat, lon], { animate: true });
     }
 
+    function updateRoverYaw(yawDeg) {
+      console.log(`updateRoverYaw: ${yawDeg}°`);
+      
+      if (yawDeg !== undefined && !isNaN(yawDeg)) {
+        currentYaw = yawDeg;
+        
+        // Update icon to the correct pre-rotated image
+        var newIcon = createRoverIcon(map.getZoom(), yawDeg);
+        roverMarker.setIcon(newIcon);
+        
+        console.log(`  Using image: ${getRoverImageForAngle(yawDeg)}`);
+      }
+    }
+
     function addMarkers(markerList) {
+      console.log("Adding markers:", markerList.length);
       markerList.forEach(m => {
         var marker = L.marker(
           [m.lat, m.lon],
@@ -133,16 +188,23 @@
     }
 
     function clearMarkers() {
+      console.log("Clearing markers");
       markers.forEach(m => map.removeLayer(m.marker));
       markers = [];
     }
 
+    /* ===============================
+       🔍 ZOOM HANDLER
+    =============================== */
 
     map.on('zoomend', function() {
       var zoom = map.getZoom();
+      console.log(`Zoom: ${zoom}, maintaining yaw: ${currentYaw}°`);
 
-      roverMarker.setIcon(createIcon("rover", zoom));
+      // Update rover icon with current angle
+      roverMarker.setIcon(createRoverIcon(zoom, currentYaw));
 
+      // Update other markers
       markers.forEach(m => {
         m.marker.setIcon(createIcon(m.label, zoom));
       });
@@ -151,10 +213,13 @@
     /* ===============================
        🌍 EXPOSE TO QT
     =============================== */
-    window.updateRover = updateRover;
+    window.updateRoverPosition = updateRoverPosition;
+    window.updateRoverYaw = updateRoverYaw;
     window.addMarkers = addMarkers;
     window.clearMarkers = clearMarkers;
     window.map = map;
+    
+    console.log("✓ Map ready, functions exposed");
 
   </script>
 </body>

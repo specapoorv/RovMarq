@@ -3,10 +3,10 @@ from PySide6.QtWidgets import QMainWindow
 from PySide6.QtCore import Signal, QUrl
 import csv
 import json
-
+import sys
 from PySide6.QtWidgets import QApplication, QMainWindow, QHeaderView
 from PySide6.QtCore import Signal
-import os
+import math
 from PySide6.QtCore import QUrl
 from components.csvFileComponent import csvFileComponent
 
@@ -24,7 +24,7 @@ class MainWindow(QMainWindow):
         self.ui.webEngineView.load(QUrl("http://localhost:8000/map.html"))
         
         # CSV viewer
-        self.csv_file_path = "/home/ananth/adeesh.csv"
+        self.csv_file_path = "waypoints.csv"
         self.csv_viewer = csvFileComponent(self.csv_file_path)
         self.ui.csvFile.setModel(self.csv_viewer)
         header = self.ui.csvFile.horizontalHeader()
@@ -33,6 +33,9 @@ class MainWindow(QMainWindow):
         # Load Leaflet map
         self.ui.webEngineView.load(QUrl("http://localhost:8000/map.html"))
         self.ui.webEngineView.loadFinished.connect(self.on_map_loaded)
+
+        self.current_yaw = 0.0 
+
 
     # ===============================
     # MAP / WAYPOINT HANDLING
@@ -69,12 +72,19 @@ class MainWindow(QMainWindow):
 
     def update_gps(self, latitude, longitude):
         self.ui.GPSValuesLabel.setText(f"{latitude:.6f}, {longitude:.6f}")
-        self.ui.webEngineView.page().runJavaScript(
-            f"updateRover({latitude}, {longitude});"
-        )
+        
+        js = f"updateRoverPosition({latitude}, {longitude});"
+        self.ui.webEngineView.page().runJavaScript(js)
 
     def update_odom(self, x, y, yaw):
+        self.current_yaw = yaw
         self.ui.OdomValueLabel.setText(f"{x:.2f} {y:.2f} {yaw:.2f}")
+        
+        yaw_deg = math.degrees(yaw)
+        yaw_deg -= 90  # adjust if needed
+        
+        js = f"updateRoverYaw({yaw_deg});"
+        self.ui.webEngineView.page().runJavaScript(js)
 
     def update_battery(self, battery):
         # self.ui.batteryValueLabel.setText(f"{battery:.2f}%")

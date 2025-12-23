@@ -332,7 +332,15 @@ class Ui_guiMainWindow(object):
 "   	color: rgb(24, 24, 29);                   /* Text color */\n"
 "	font: 1200 12pt \"FreeMono\";\n"
 "    text-align: center;               /* Text alignment */\n"
-"}")
+"}\n"
+"\n"
+"QTableView QLineEdit {\n"
+"    background-color: rgb(227, 30, 3);\n"
+"    color: rgb(24, 24, 29);\n"
+"    border: 2px solid #555;\n"
+"    selection-background-color: #ff6b6b;\n"
+"}\n"
+"")
         guiMainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QStatusBar(guiMainWindow)
         self.statusbar.setObjectName(u"statusbar")

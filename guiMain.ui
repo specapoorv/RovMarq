@@ -474,7 +474,15 @@ QHeaderView::section {
    	color: rgb(24, 24, 29);                   /* Text color */
 	font: 1200 12pt &quot;FreeMono&quot;;
     text-align: center;               /* Text alignment */
-}</string>
+}
+
+QTableView QLineEdit {
+    background-color: rgb(227, 30, 3);
+    color: rgb(24, 24, 29);
+    border: 2px solid #555;
+    selection-background-color: #ff6b6b;
+}
+</string>
     </property>
    </widget>
   </widget>

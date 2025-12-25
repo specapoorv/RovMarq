@@ -19,7 +19,7 @@ def main():
     app = QApplication(sys.argv)
 
     window = MainWindow()
-
+ 
     # map_widget = SimpleMapWidget(width=400, height=400)
 
     bridge = ROSQtBridge()  # subscribes to all topics
@@ -36,6 +36,7 @@ def main():
 
 
     bridge.gps_updated.connect(window.update_gps)
+    bridge.yaw_updated.connect(window.update_yaw)
     bridge.odom_updated.connect(window.update_odom)
     bridge.battery_updated.connect(window.update_battery)
     # bridge.latency_updated.connect(window.update_latency)
@@ -48,8 +49,9 @@ def main():
     bridge.csv_changed.connect(window.load_waypoints)
 
 
-
     window.kill_signal.connect(bridge.kill_handler) #for kill switch
+    window.colour_signal.connect(bridge.colour_override_handler)
+    
 
     # #async writing 
     # bridge.gps_updated.connect(lambda lat, lon: influx_writer.enqueue({

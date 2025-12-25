@@ -12,6 +12,7 @@ from components.csvFileComponent import csvFileComponent
 
 class MainWindow(QMainWindow):
     kill_signal = Signal(bool)
+    colour_signal = Signal(str)
 
     def __init__(self):
         super().__init__()
@@ -20,6 +21,19 @@ class MainWindow(QMainWindow):
 
         # Buttons
         self.ui.KillSwitchButton.clicked.connect(self.kill_switch_clicked)
+        self.colour_buttons = {
+        "red": self.ui.RedButton,
+        "green": self.ui.GreenButton,
+        "blue": self.ui.BlueButton,
+        "yellow": self.ui.YellowButton,
+        "orange": self.ui.OrangeButton,
+        "purple": self.ui.PurpleButton
+        }
+
+    # Connect all buttons to handler with their name
+        for name, btn in self.colour_buttons.items():
+            btn.clicked.connect(lambda checked, n=name: self.colour_button_clicked(n))
+
         # build absolute path relative to this file
         self.ui.webEngineView.load(QUrl("http://localhost:8000/map.html"))
         
@@ -76,15 +90,22 @@ class MainWindow(QMainWindow):
         js = f"updateRoverPosition({latitude}, {longitude});"
         self.ui.webEngineView.page().runJavaScript(js)
 
+    def update_yaw(self, yaw):
+        self.yaw = yaw
+
+        js = f"updateRoverYaw({yaw});"
+        self.ui.webEngineView.page().runJavaScript(js)
+
+
     def update_odom(self, x, y, yaw):
         self.current_yaw = yaw
         self.ui.OdomValueLabel.setText(f"{x:.2f} {y:.2f} {yaw:.2f}")
         
-        yaw_deg = math.degrees(yaw)
-        yaw_deg -= 90  # adjust if needed
+        # yaw_deg = math.degrees(yaw)
+        # yaw_deg -= 90  # adjust if needed
         
-        js = f"updateRoverYaw({yaw_deg});"
-        self.ui.webEngineView.page().runJavaScript(js)
+        # js = f"updateRoverYaw({yaw_deg});"
+        # self.ui.webEngineView.page().runJavaScript(js)
 
     def update_battery(self, battery):
         # self.ui.batteryValueLabel.setText(f"{battery:.2f}%")
@@ -113,3 +134,8 @@ class MainWindow(QMainWindow):
     def kill_switch_clicked(self):
         print("killing signal initiated")
         self.kill_signal.emit(True)
+
+    def colour_button_clicked(self, colour_name):
+        #depending on button
+        print(f"COLOUR OVERRIDE INITIATED: {colour_name}")
+        self.colour_signal.emit(colour_name)

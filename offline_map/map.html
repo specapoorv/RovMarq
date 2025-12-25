@@ -128,7 +128,7 @@
     }
 
     function createRoverIcon(zoom, angleDeg) {
-      var baseSize = 24;
+      var baseSize = 48;
       var scale = zoom / 15;
       scale = Math.max(0.6, Math.min(scale, 1.4));
       var size = baseSize * scale;
@@ -145,7 +145,7 @@
 
     // Create rover marker
     var roverMarker = L.marker(
-      [12.991500, 80.234600],
+      [12.992152, 80.232440],
       { icon: createRoverIcon(map.getZoom(), 0) }
     ).addTo(map);
 

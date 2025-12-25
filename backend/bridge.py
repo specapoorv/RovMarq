@@ -38,13 +38,14 @@ class CSVHandler(FileSystemEventHandler):
 
 class ROSQtBridge(Node, QObject):
     kill_signal = Signal(bool)
-
+    colour_signal = Signal(str)
     '''
     bridge just pushes the signals from ros to Qt
     no processing, no blocking
     '''
 
     gps_updated = Signal(float, float)
+    yaw_updated = Signal(float)
     odom_updated = Signal(float, float, float)
     battery_updated = Signal(float)
     latency_updated = Signal(float)
@@ -65,7 +66,8 @@ class ROSQtBridge(Node, QObject):
             reliability=ReliabilityPolicy.BEST_EFFORT
         )
 
-        self.create_subscription(NavSatFix, "/gps/fix", self.gps_callback, 10)
+        self.create_subscription(NavSatFix, "/gps_fix", self.gps_callback, 10)
+        self.create_subscription(Float32, "/global_north", self.yaw_callback, 10)
         self.create_subscription(Odometry, "/rtabmap/odom", self.odom_callback, self.best_effort)
         self.create_subscription(Float32, "/battery_topic", self.battery_callback, 10)
         self.create_subscription(Float32MultiArray, "/enc_auto", self.steering_callback, 10)
@@ -96,6 +98,10 @@ class ROSQtBridge(Node, QObject):
     def gps_callback(self, msg: NavSatFix):
         self.get_logger().info(f"{msg.latitude}, {msg.longitude}")
         self.gps_updated.emit(msg.latitude, msg.longitude)
+
+    def yaw_callback(self, msg):
+        yaw = msg.data
+        self.yaw_updated.emit(yaw)
 
     def vel_callback(self, twist: Float32MultiArray):
         vel = twist.data[0]
@@ -129,6 +135,15 @@ class ROSQtBridge(Node, QObject):
             pwm_msg = Int32MultiArray()
             pwm_msg.data = [0, 0, 0, 0, 0, 0, 0, 0]
             self.motor_publisher.publish(pwm_msg)
+
+    def colour_override_handler(self, colour_name):
+        cmd = ["ros2", "param", "set", "/yolo_publisher", "colour_override", colour_name]
+        try:
+            subprocess.Popen(cmd)
+            print(f"ROS2 param set called: {cmd}")
+        except Exception as e:
+            print("Failed to set ROS2 param:", e)
+
 
     def steering_callback(self, msg):
         data = msg.data

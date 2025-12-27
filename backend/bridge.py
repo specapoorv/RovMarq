@@ -1,6 +1,7 @@
 from PySide6.QtCore import QObject, Signal
 from rclpy.node import Node
 from sensor_msgs.msg import NavSatFix
+from geometry_msgs.msg import PoseArray
 from std_msgs.msg import Float32, Int8, String
 from nav_msgs.msg import Odometry
 from rclpy.qos import QoSProfile, ReliabilityPolicy
@@ -14,6 +15,7 @@ from tf_transformations import euler_from_quaternion
 from frontend.Qwindow import MainWindow
 from std_msgs.msg import Int32MultiArray
 from std_msgs.msg import Float32MultiArray
+from std_srvs.srv import Trigger
 import subprocess
 
 from watchdog.observers import Observer

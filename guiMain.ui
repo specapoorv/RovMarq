@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1204</width>
-    <height>953</height>
+    <width>1180</width>
+    <height>883</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,8 +20,8 @@
    <widget class="RoverWheelWidget" name="roverwheelwidget" native="true">
     <property name="geometry">
      <rect>
-      <x>90</x>
-      <y>70</y>
+      <x>-30</x>
+      <y>10</y>
       <width>301</width>
       <height>421</height>
      </rect>
@@ -65,14 +65,33 @@ background-color: transparent;</string>
       <string>0</string>
      </property>
     </widget>
+    <widget class="QLabel" name="FrontRightEncoderText">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>40</y>
+       <width>67</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: rgb(227, 30, 3);
+font: 1000 14pt &quot;FreeMono&quot;;
+/* qproperty-alignment: AlignCenter; */
+background-color: transparent;</string>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>480</x>
-      <y>20</y>
-      <width>321</width>
-      <height>511</height>
+      <x>340</x>
+      <y>0</y>
+      <width>301</width>
+      <height>441</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -81,7 +100,7 @@ background-color: transparent;</string>
        <property name="maximumSize">
         <size>
          <width>160000</width>
-         <height>150</height>
+         <height>175</height>
         </size>
        </property>
        <property name="styleSheet">
@@ -103,18 +122,18 @@ QGroupBox::title {
 }</string>
        </property>
        <property name="title">
-        <string>Rover Status</string>
+        <string>Rover Info</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_3">
-        <item row="1" column="0">
-         <widget class="QLabel" name="VelocityNameLabel">
+        <item row="4" column="0">
+         <widget class="QLabel" name="GPSNameLabel">
           <property name="styleSheet">
            <string notr="true">color: rgb(119, 118, 123);
 font: 1000 18pt &quot;FreeMono&quot;;
 qproperty-alignment: AlignCenter;</string>
           </property>
           <property name="text">
-           <string>Velocity</string>
+           <string>GPS</string>
           </property>
          </widget>
         </item>
@@ -127,42 +146,6 @@ qproperty-alignment: AlignCenter;</string>
           </property>
           <property name="text">
            <string>Config</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QLabel" name="ModeValueLabel">
-          <property name="styleSheet">
-           <string notr="true">color: rgb(119, 118, 123);
-font: 18pt &quot;FreeMono&quot;;
-qproperty-alignment: AlignCenter;</string>
-          </property>
-          <property name="text">
-           <string>0</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="1">
-         <widget class="QLabel" name="ConfigValueLabel">
-          <property name="styleSheet">
-           <string notr="true">color: rgb(119, 118, 123);
-font: 18pt &quot;FreeMono&quot;;
-qproperty-alignment: AlignCenter;</string>
-          </property>
-          <property name="text">
-           <string>Drive</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="0">
-         <widget class="QLabel" name="ModeNameLabel">
-          <property name="styleSheet">
-           <string notr="true">color: rgb(119, 118, 123);
-font: 1000 18pt &quot;FreeMono&quot;;
-qproperty-alignment: AlignCenter;</string>
-          </property>
-          <property name="text">
-           <string>Mode</string>
           </property>
          </widget>
         </item>
@@ -190,6 +173,66 @@ qproperty-alignment: AlignCenter;</string>
           </property>
          </widget>
         </item>
+        <item row="3" column="1">
+         <widget class="QLabel" name="ConfigValueLabel">
+          <property name="styleSheet">
+           <string notr="true">color: rgb(119, 118, 123);
+font: 18pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignCenter;</string>
+          </property>
+          <property name="text">
+           <string>DRIVE</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0">
+         <widget class="QLabel" name="OdomNameLabel">
+          <property name="styleSheet">
+           <string notr="true">color: rgb(119, 118, 123);
+font: 1000 18pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignCenter;</string>
+          </property>
+          <property name="text">
+           <string>Odom</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="VelocityNameLabel">
+          <property name="styleSheet">
+           <string notr="true">color: rgb(119, 118, 123);
+font: 1000 18pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignCenter;</string>
+          </property>
+          <property name="text">
+           <string>Velocity</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="ModeNameLabel">
+          <property name="styleSheet">
+           <string notr="true">color: rgb(119, 118, 123);
+font: 1000 18pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignCenter;</string>
+          </property>
+          <property name="text">
+           <string>Mode</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QLabel" name="GPSValuesLabel">
+          <property name="styleSheet">
+           <string notr="true">color: rgb(119, 118, 123);
+font: 14pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignCenter;</string>
+          </property>
+          <property name="text">
+           <string>-</string>
+          </property>
+         </widget>
+        </item>
         <item row="2" column="1">
          <widget class="QLabel" name="OmegaValueLabel">
           <property name="styleSheet">
@@ -202,40 +245,19 @@ qproperty-alignment: AlignCenter;</string>
           </property>
          </widget>
         </item>
-       </layout>
-      </widget>
-     </item>
-     <item>
-      <widget class="QGroupBox" name="sensorDataPanel">
-       <property name="maximumSize">
-        <size>
-         <width>160000</width>
-         <height>100</height>
-        </size>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">QGroupBox {
-	border: 2px solid rgb(227, 30, 3);
-	border-radius: 10px;
-	margin-top: 0.5ex;
-	font-size: 24px;
-	font-weight: bold;
-	font: 700 20pt &quot;Uroob&quot;;
-}
-
-QGroupBox::title {
-	color: rgb(227, 30, 3);
-	subcontrol-origin: margin;
-	subcontrol-position: top-left;
-	padding: 0 10px;
-	font-weight: bold;
-}</string>
-       </property>
-       <property name="title">
-        <string>Sensor Data</string>
-       </property>
-       <layout class="QGridLayout" name="gridLayout">
-        <item row="2" column="1">
+        <item row="0" column="1">
+         <widget class="QLabel" name="ModeValueLabel">
+          <property name="styleSheet">
+           <string notr="true">color: rgb(119, 118, 123);
+font: 18pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignCenter;</string>
+          </property>
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="1">
          <widget class="QLabel" name="OdomValueLabel">
           <property name="styleSheet">
            <string notr="true">color: rgb(119, 118, 123);
@@ -244,78 +266,6 @@ qproperty-alignment: AlignCenter;</string>
           </property>
           <property name="text">
            <string>-</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QLabel" name="GPSValuesLabel">
-          <property name="styleSheet">
-           <string notr="true">color: rgb(119, 118, 123);
-font: 14pt &quot;FreeMono&quot;;
-qproperty-alignment: AlignCenter;</string>
-          </property>
-          <property name="text">
-           <string>0</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="BatteryNameLabel">
-          <property name="styleSheet">
-           <string notr="true">color: rgb(119, 118, 123);
-font: 1000 18pt &quot;FreeMono&quot;;
-qproperty-alignment: AlignCenter;</string>
-          </property>
-          <property name="text">
-           <string>SOC</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="OdomNameLabel">
-          <property name="styleSheet">
-           <string notr="true">color: rgb(119, 118, 123);
-font: 1000 18pt &quot;FreeMono&quot;;
-qproperty-alignment: AlignCenter;</string>
-          </property>
-          <property name="text">
-           <string>Odom</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="1">
-         <widget class="BatteryProgressBar" name="BatteryProgressBar">
-          <property name="styleSheet">
-           <string notr="true">QProgressBar {
-    border: 2px solid grey;
-    border-radius: 5px;
-	border-color: rgb(119, 118, 123);
-    text-align: center;
-    background-color: rgb(26, 28, 32);	
-	font: 600 12pt &quot;FreeMono&quot;;
-	/*color: rgb(119, 118, 123);*/
-}
-
-QProgressBar::chunk {
-    background-color: rgb(250, 118, 23);
-    width: 20px;
-}
-</string>
-          </property>
-          <property name="value">
-           <number>24</number>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="GPSNameLabel">
-          <property name="styleSheet">
-           <string notr="true">color: rgb(119, 118, 123);
-font: 1000 18pt &quot;FreeMono&quot;;
-qproperty-alignment: AlignCenter;</string>
-          </property>
-          <property name="text">
-           <string>GPS</string>
           </property>
          </widget>
         </item>
@@ -352,7 +302,7 @@ NetMapWidget QFrame#deviceRow {
 
 NetMapWidget QLabel#deviceName {
 	color: rgb(119, 118, 123);
-	font: 1000 12pt &quot;FreeMono&quot;;
+	font: 1000 8pt &quot;FreeMono&quot;;
     background: transparent;
     border: none;
 }
@@ -390,51 +340,13 @@ QPushButton:hover {
      </item>
     </layout>
    </widget>
-   <widget class="QLabel" name="FrontRightEncoderText">
-    <property name="geometry">
-     <rect>
-      <x>380</x>
-      <y>110</y>
-      <width>67</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(227, 30, 3);
-font: 1000 14pt &quot;FreeMono&quot;;
-/* qproperty-alignment: AlignCenter; */
-background-color: transparent;</string>
-    </property>
-    <property name="text">
-     <string>0</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="BackRightEncoderText">
-    <property name="geometry">
-     <rect>
-      <x>380</x>
-      <y>410</y>
-      <width>67</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(227, 30, 3);
-font: 1000 14pt &quot;FreeMono&quot;;
-/* qproperty-alignment: AlignCenter; */
-background-color: transparent;</string>
-    </property>
-    <property name="text">
-     <string>0</string>
-    </property>
-   </widget>
    <widget class="QWebEngineView" name="webEngineView">
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>540</y>
-      <width>721</width>
-      <height>381</height>
+      <x>20</x>
+      <y>460</y>
+      <width>621</width>
+      <height>401</height>
      </rect>
     </property>
     <property name="url">
@@ -446,10 +358,10 @@ background-color: transparent;</string>
    <widget class="QTableView" name="csvFile">
     <property name="geometry">
      <rect>
-      <x>850</x>
-      <y>20</y>
-      <width>321</width>
-      <height>231</height>
+      <x>650</x>
+      <y>10</y>
+      <width>351</width>
+      <height>261</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -458,6 +370,7 @@ background-color: transparent;</string>
     selection-color: rgb(119, 118, 123);          /* Selected cell text */
     border: 2px solid rgb(227, 30, 3);          /* Border around entire table */
 	font: 1000 10pt &quot;FreeMono&quot;;
+   border-radius: 10px;
 }
 
 QTableView:item {
@@ -485,6 +398,184 @@ QTableView QLineEdit {
 </string>
     </property>
    </widget>
+   <widget class="QGroupBox" name="colorGroupBox">
+    <property name="geometry">
+     <rect>
+      <x>1020</x>
+      <y>0</y>
+      <width>131</width>
+      <height>271</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QGroupBox {
+	border: 2px solid rgb(227, 30, 3);
+	border-radius: 10px;
+	margin-top: 0.5ex;
+	font-size: 24px;
+	font-weight: bold;
+	font: 700 20pt &quot;Uroob&quot;;
+}
+
+QGroupBox::title {
+	color: rgb(227, 30, 3);
+	subcontrol-origin: margin;
+	subcontrol-position: top-left;
+	padding: 0 10px;
+	font-weight: bold;
+}</string>
+    </property>
+    <property name="title">
+     <string>Color</string>
+    </property>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="1" column="1">
+      <widget class="QPushButton" name="blueButton">
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+    background-color: rgb(8, 46, 244);
+    color: white;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-weight: bold;
+}
+
+QPushButton:hover {
+    background-color: #45a049;
+}
+</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QPushButton" name="yellowButton">
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+    background-color: rgb(255, 243, 14);
+    color: white;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-weight: bold;
+}
+
+QPushButton:hover {
+    background-color: #45a049;
+}
+</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QPushButton" name="greenButton">
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+    background-color: rgb(31, 249, 12);
+    color: white;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-weight: bold;
+}
+
+QPushButton:hover {
+    background-color: #45a049;
+}
+</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QPushButton" name="redButton">
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+    background-color: rgb(246, 11, 11);
+    color: white;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-weight: bold;
+}
+
+QPushButton:hover {
+    background-color: #45a049;
+}
+</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QPushButton" name="orangeButton">
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+    background-color: rgb(251, 130, 5);
+    color: white;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-weight: bold;
+}
+
+QPushButton:hover {
+    background-color: #45a049;
+}
+</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QPushButton" name="purpleButton">
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+    background-color:rgb(198, 19, 227);
+    color: white;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-weight: bold;
+}
+
+QPushButton:hover {
+    background-color: #45a049;
+}
+</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QLabel" name="BackRightEncoderText">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>350</y>
+      <width>67</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(227, 30, 3);
+font: 1000 14pt &quot;FreeMono&quot;;
+/* qproperty-alignment: AlignCenter; */
+background-color: transparent;</string>
+    </property>
+    <property name="text">
+     <string>0</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
@@ -499,11 +590,6 @@ QTableView QLineEdit {
    <extends>QWidget</extends>
    <header>components.RoverWheelWidget</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>BatteryProgressBar</class>
-   <extends>QProgressBar</extends>
-   <header>components.BatteryProgressBar</header>
   </customwidget>
   <customwidget>
    <class>NetMapWidget</class>

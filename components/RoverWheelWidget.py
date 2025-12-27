@@ -46,6 +46,8 @@ class RoverWheelWidget(QWidget):
         painter.translate(-center)
         
         # Draw black rotating rectangle (the wheel module)
+        wheel_rect = QRectF(x - 17, y - 42, 34, 84)
+        painter.fillRect(wheel_rect, QColor(200, 200, 200))
         wheel_rect = QRectF(x - 15, y - 40, 30, 80)
         painter.fillRect(wheel_rect, QColor(0, 0, 0))
         

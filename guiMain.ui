@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1180</width>
+    <width>1325</width>
     <height>883</height>
    </rect>
   </property>
@@ -401,10 +401,10 @@ QTableView QLineEdit {
    <widget class="QGroupBox" name="colorGroupBox">
     <property name="geometry">
      <rect>
-      <x>1020</x>
-      <y>0</y>
-      <width>131</width>
-      <height>271</height>
+      <x>1010</x>
+      <y>10</y>
+      <width>161</width>
+      <height>261</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -429,48 +429,6 @@ QGroupBox::title {
      <string>Color</string>
     </property>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="1" column="1">
-      <widget class="QPushButton" name="blueButton">
-       <property name="styleSheet">
-        <string notr="true">QPushButton {
-    background-color: rgb(8, 46, 244);
-    color: white;
-    border-radius: 8px;
-    padding: 6px 12px;
-    font-weight: bold;
-}
-
-QPushButton:hover {
-    background-color: #45a049;
-}
-</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QPushButton" name="yellowButton">
-       <property name="styleSheet">
-        <string notr="true">QPushButton {
-    background-color: rgb(255, 243, 14);
-    color: white;
-    border-radius: 8px;
-    padding: 6px 12px;
-    font-weight: bold;
-}
-
-QPushButton:hover {
-    background-color: #45a049;
-}
-</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
      <item row="0" column="1">
       <widget class="QPushButton" name="greenButton">
        <property name="styleSheet">
@@ -513,7 +471,28 @@ QPushButton:hover {
        </property>
       </widget>
      </item>
-     <item row="2" column="0">
+     <item row="1" column="1">
+      <widget class="QPushButton" name="blueButton">
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+    background-color: rgb(8, 46, 244);
+    color: white;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-weight: bold;
+}
+
+QPushButton:hover {
+    background-color: #45a049;
+}
+</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
       <widget class="QPushButton" name="orangeButton">
        <property name="styleSheet">
         <string notr="true">QPushButton {
@@ -534,11 +513,32 @@ QPushButton:hover {
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
+     <item row="2" column="0">
       <widget class="QPushButton" name="purpleButton">
        <property name="styleSheet">
         <string notr="true">QPushButton {
     background-color:rgb(198, 19, 227);
+    color: white;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-weight: bold;
+}
+
+QPushButton:hover {
+    background-color: #45a049;
+}
+</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QPushButton" name="yellowButton">
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+    background-color: rgb(255, 243, 14);
     color: white;
     border-radius: 8px;
     padding: 6px 12px;
@@ -575,6 +575,709 @@ background-color: transparent;</string>
     <property name="text">
      <string>0</string>
     </property>
+   </widget>
+   <widget class="QGroupBox" name="cameraPanel">
+    <property name="geometry">
+     <rect>
+      <x>660</x>
+      <y>280</y>
+      <width>511</width>
+      <height>271</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QGroupBox {
+	border: 2px solid rgb(227, 30, 3);
+	border-radius: 10px;
+	margin-top: 0.5ex;
+	font-size: 24px;
+	font-weight: bold;
+	font: 700 20pt &quot;Uroob&quot;;
+}
+
+QGroupBox::title {
+	color: rgb(227, 30, 3);
+	subcontrol-origin: margin;
+	subcontrol-position: top-left;
+	padding: 0 10px;
+	font-weight: bold;
+}</string>
+    </property>
+    <property name="title">
+     <string>Camera Panel</string>
+    </property>
+    <layout class="QGridLayout" name="gridLayout_2">
+     <item row="1" column="1">
+      <widget class="QSlider" name="brightnessSlider1">
+       <property name="maximumSize">
+        <size>
+         <width>100</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">/* The filled part (left of handle) */
+QSlider::sub-page:horizontal {
+    background: rgb(227, 30, 3); /* Darker green fill */
+    border-radius: 4px;
+}
+
+/* The unfilled part (right of handle) */
+QSlider::add-page:horizontal {
+    background: #575757;
+    border-radius: 4px;
+}</string>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="zoomLabel2">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(119, 118, 123);
+font: 500 15pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignLeft;</string>
+       </property>
+       <property name="text">
+        <string>Zoom</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="brightnessLabel1">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>35</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(119, 118, 123);
+font: 500 15pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignLeft;</string>
+       </property>
+       <property name="text">
+        <string>Brightness</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1">
+      <widget class="QSlider" name="contrastSlider2">
+       <property name="maximumSize">
+        <size>
+         <width>100</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">/* The filled part (left of handle) */
+QSlider::sub-page:horizontal {
+    background: rgb(227, 30, 3); /* Darker green fill */
+    border-radius: 4px;
+}
+
+/* The unfilled part (right of handle) */
+QSlider::add-page:horizontal {
+    background: #575757;
+    border-radius: 4px;
+}</string>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="zoomLabel1">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(119, 118, 123);
+font: 500 15pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignLeft;</string>
+       </property>
+       <property name="text">
+        <string>Zoom</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QSlider" name="brightnessSlider2">
+       <property name="maximumSize">
+        <size>
+         <width>100</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">/* The filled part (left of handle) */
+QSlider::sub-page:horizontal {
+    background: rgb(227, 30, 3); /* Darker green fill */
+    border-radius: 4px;
+}
+
+/* The unfilled part (right of handle) */
+QSlider::add-page:horizontal {
+    background: #575757;
+    border-radius: 4px;
+}</string>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="contrastLabel1">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(119, 118, 123);
+font: 500 15pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignLeft;</string>
+       </property>
+       <property name="text">
+        <string>Contrast</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1">
+      <widget class="QSlider" name="zoomSlider2">
+       <property name="maximumSize">
+        <size>
+         <width>100</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">/* The filled part (left of handle) */
+QSlider::sub-page:horizontal {
+    background: rgb(227, 30, 3); /* Darker green fill */
+    border-radius: 4px;
+}
+
+/* The unfilled part (right of handle) */
+QSlider::add-page:horizontal {
+    background: #575757;
+    border-radius: 4px;
+}</string>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="cameraTitleLabel2">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>35</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(119, 118, 123);
+font: 1000 15pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignLeft
+;</string>
+       </property>
+       <property name="text">
+        <string>Camera 2</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QSlider" name="zoomSlider1">
+       <property name="maximumSize">
+        <size>
+         <width>100</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">/* The filled part (left of handle) */
+QSlider::sub-page:horizontal {
+    background: rgb(227, 30, 3); /* Darker green fill */
+    border-radius: 4px;
+}
+
+/* The unfilled part (right of handle) */
+QSlider::add-page:horizontal {
+    background: #575757;
+    border-radius: 4px;
+}</string>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QLabel" name="brightnessLabel3">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(119, 118, 123);
+font: 500 15pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignLeft;</string>
+       </property>
+       <property name="text">
+        <string>Brightness</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="cameraTitleLabel1">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>35</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(119, 118, 123);
+font: 1000 15pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignLeft
+;</string>
+       </property>
+       <property name="text">
+        <string>Camera 1</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="2">
+      <widget class="QLabel" name="contrastLabel3">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(119, 118, 123);
+font: 500 15pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignLeft;</string>
+       </property>
+       <property name="text">
+        <string>Contrast</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QSlider" name="contrastSlider1">
+       <property name="maximumSize">
+        <size>
+         <width>100</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">/* The filled part (left of handle) */
+QSlider::sub-page:horizontal {
+    background: rgb(227, 30, 3); /* Darker green fill */
+    border-radius: 4px;
+}
+
+/* The unfilled part (right of handle) */
+QSlider::add-page:horizontal {
+    background: #575757;
+    border-radius: 4px;
+}</string>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QLabel" name="cameraTitleLabel3">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>35</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(119, 118, 123);
+font: 1000 15pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignLeft
+;</string>
+       </property>
+       <property name="text">
+        <string>Camera 3</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="2">
+      <widget class="QLabel" name="zoomLabel3">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(119, 118, 123);
+font: 500 15pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignLeft;</string>
+       </property>
+       <property name="text">
+        <string>Zoom</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="brightnessLabel2">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(119, 118, 123);
+font: 500 15pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignLeft;</string>
+       </property>
+       <property name="text">
+        <string>Brightness</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0">
+      <widget class="QLabel" name="contrastLabel2">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(119, 118, 123);
+font: 500 15pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignLeft;</string>
+       </property>
+       <property name="text">
+        <string>Contrast</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="3">
+      <widget class="QSlider" name="brightnessSlider3">
+       <property name="maximumSize">
+        <size>
+         <width>100</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">/* The filled part (left of handle) */
+QSlider::sub-page:horizontal {
+    background: rgb(227, 30, 3); /* Darker green fill */
+    border-radius: 4px;
+}
+
+/* The unfilled part (right of handle) */
+QSlider::add-page:horizontal {
+    background: #575757;
+    border-radius: 4px;
+}</string>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="3">
+      <widget class="QSlider" name="zoomSlider3">
+       <property name="maximumSize">
+        <size>
+         <width>100</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">/* The filled part (left of handle) */
+QSlider::sub-page:horizontal {
+    background: rgb(227, 30, 3); /* Darker green fill */
+    border-radius: 4px;
+}
+
+/* The unfilled part (right of handle) */
+QSlider::add-page:horizontal {
+    background: #575757;
+    border-radius: 4px;
+}</string>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="3">
+      <widget class="QSlider" name="contrastSlider3">
+       <property name="maximumSize">
+        <size>
+         <width>100</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">/* The filled part (left of handle) */
+QSlider::sub-page:horizontal {
+    background: rgb(227, 30, 3); /* Darker green fill */
+    border-radius: 4px;
+}
+
+/* The unfilled part (right of handle) */
+QSlider::add-page:horizontal {
+    background: #575757;
+    border-radius: 4px;
+}</string>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="2">
+      <widget class="QLabel" name="cameraTitleLabel4">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>35</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(119, 118, 123);
+font: 1000 15pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignLeft
+;</string>
+       </property>
+       <property name="text">
+        <string>Camera 4</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="2">
+      <widget class="QLabel" name="brightnessLabel4">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(119, 118, 123);
+font: 500 15pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignLeft;</string>
+       </property>
+       <property name="text">
+        <string>Brightness</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="2">
+      <widget class="QLabel" name="zoomLabel4">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(119, 118, 123);
+font: 500 15pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignLeft;</string>
+       </property>
+       <property name="text">
+        <string>Zoom</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="2">
+      <widget class="QLabel" name="contrastLabel4">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(119, 118, 123);
+font: 500 15pt &quot;FreeMono&quot;;
+qproperty-alignment: AlignLeft;</string>
+       </property>
+       <property name="text">
+        <string>Contrast</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="3">
+      <widget class="QSlider" name="brightnessSlider4">
+       <property name="maximumSize">
+        <size>
+         <width>100</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">/* The filled part (left of handle) */
+QSlider::sub-page:horizontal {
+    background: rgb(227, 30, 3); /* Darker green fill */
+    border-radius: 4px;
+}
+
+/* The unfilled part (right of handle) */
+QSlider::add-page:horizontal {
+    background: #575757;
+    border-radius: 4px;
+}</string>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="3">
+      <widget class="QSlider" name="zoomSlider4">
+       <property name="maximumSize">
+        <size>
+         <width>100</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">/* The filled part (left of handle) */
+QSlider::sub-page:horizontal {
+    background: rgb(227, 30, 3); /* Darker green fill */
+    border-radius: 4px;
+}
+
+/* The unfilled part (right of handle) */
+QSlider::add-page:horizontal {
+    background: #575757;
+    border-radius: 4px;
+}</string>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="3">
+      <widget class="QSlider" name="contrastSlider4">
+       <property name="maximumSize">
+        <size>
+         <width>100</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">/* The filled part (left of handle) */
+QSlider::sub-page:horizontal {
+    background: rgb(227, 30, 3); /* Darker green fill */
+    border-radius: 4px;
+}
+
+/* The unfilled part (right of handle) */
+QSlider::add-page:horizontal {
+    background: #575757;
+    border-radius: 4px;
+}</string>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>

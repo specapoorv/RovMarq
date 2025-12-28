@@ -22,12 +22,12 @@ class MainWindow(QMainWindow):
         # Buttons
         self.ui.KillSwitchButton.clicked.connect(self.kill_switch_clicked)
         self.colour_buttons = {
-        "red": self.ui.RedButton,
-        "green": self.ui.GreenButton,
-        "blue": self.ui.BlueButton,
-        "yellow": self.ui.YellowButton,
-        "orange": self.ui.OrangeButton,
-        "purple": self.ui.PurpleButton
+        "red": self.ui.redButton,
+        "green": self.ui.greenButton,
+        "blue": self.ui.blueButton,
+        "yellow": self.ui.yellowButton,
+        "orange": self.ui.orangeButton,
+        "purple": self.ui.purpleButton
         }
 
     # Connect all buttons to handler with their name

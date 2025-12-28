@@ -2,7 +2,7 @@ lat,lon,label
 12.9921522,80.2324409,green_waypoint
 12.991977,80.232737,red_waypoint
 12.992277,80.2326876,green_cone
-12.9921591,0.1,red_cone
+12.9921591,80.232623,red_cone
 12.9919911,80.2325585,yellow_waypoint
 12.992065,80.232607,yellow_waypoint
 0.01,0.0,0

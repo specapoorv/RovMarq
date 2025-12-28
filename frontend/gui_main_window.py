@@ -18,7 +18,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWidgets import (QApplication, QGridLayout, QGroupBox, QHeaderView,
     QLabel, QMainWindow, QPushButton, QSizePolicy,
-    QStatusBar, QTableView, QVBoxLayout, QWidget)
+    QSlider, QStatusBar, QTableView, QVBoxLayout,
+    QWidget)
 
 from components.NetMapWidget import NetMapWidget
 from components.RoverWheelWidget import RoverWheelWidget
@@ -27,7 +28,7 @@ class Ui_guiMainWindow(object):
     def setupUi(self, guiMainWindow):
         if not guiMainWindow.objectName():
             guiMainWindow.setObjectName(u"guiMainWindow")
-        guiMainWindow.resize(1180, 883)
+        guiMainWindow.resize(1325, 883)
         guiMainWindow.setStyleSheet(u"background-color: rgb(24, 24, 29);")
         self.centralwidget = QWidget(guiMainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
@@ -283,7 +284,7 @@ class Ui_guiMainWindow(object):
 "")
         self.colorGroupBox = QGroupBox(self.centralwidget)
         self.colorGroupBox.setObjectName(u"colorGroupBox")
-        self.colorGroupBox.setGeometry(QRect(1020, 0, 131, 271))
+        self.colorGroupBox.setGeometry(QRect(1010, 10, 161, 261))
         self.colorGroupBox.setStyleSheet(u"QGroupBox {\n"
 "	border: 2px solid rgb(227, 30, 3);\n"
 "	border-radius: 10px;\n"
@@ -302,40 +303,6 @@ class Ui_guiMainWindow(object):
 "}")
         self.gridLayout = QGridLayout(self.colorGroupBox)
         self.gridLayout.setObjectName(u"gridLayout")
-        self.blueButton = QPushButton(self.colorGroupBox)
-        self.blueButton.setObjectName(u"blueButton")
-        self.blueButton.setStyleSheet(u"QPushButton {\n"
-"    background-color: rgb(8, 46, 244);\n"
-"    color: white;\n"
-"    border-radius: 8px;\n"
-"    padding: 6px 12px;\n"
-"    font-weight: bold;\n"
-"}\n"
-"\n"
-"QPushButton:hover {\n"
-"    background-color: #45a049;\n"
-"}\n"
-"")
-
-        self.gridLayout.addWidget(self.blueButton, 1, 1, 1, 1)
-
-        self.yellowButton = QPushButton(self.colorGroupBox)
-        self.yellowButton.setObjectName(u"yellowButton")
-        self.yellowButton.setStyleSheet(u"QPushButton {\n"
-"    background-color: rgb(255, 243, 14);\n"
-"    color: white;\n"
-"    border-radius: 8px;\n"
-"    padding: 6px 12px;\n"
-"    font-weight: bold;\n"
-"}\n"
-"\n"
-"QPushButton:hover {\n"
-"    background-color: #45a049;\n"
-"}\n"
-"")
-
-        self.gridLayout.addWidget(self.yellowButton, 1, 0, 1, 1)
-
         self.greenButton = QPushButton(self.colorGroupBox)
         self.greenButton.setObjectName(u"greenButton")
         self.greenButton.setStyleSheet(u"QPushButton {\n"
@@ -370,6 +337,23 @@ class Ui_guiMainWindow(object):
 
         self.gridLayout.addWidget(self.redButton, 0, 0, 1, 1)
 
+        self.blueButton = QPushButton(self.colorGroupBox)
+        self.blueButton.setObjectName(u"blueButton")
+        self.blueButton.setStyleSheet(u"QPushButton {\n"
+"    background-color: rgb(8, 46, 244);\n"
+"    color: white;\n"
+"    border-radius: 8px;\n"
+"    padding: 6px 12px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    background-color: #45a049;\n"
+"}\n"
+"")
+
+        self.gridLayout.addWidget(self.blueButton, 1, 1, 1, 1)
+
         self.orangeButton = QPushButton(self.colorGroupBox)
         self.orangeButton.setObjectName(u"orangeButton")
         self.orangeButton.setStyleSheet(u"QPushButton {\n"
@@ -385,7 +369,7 @@ class Ui_guiMainWindow(object):
 "}\n"
 "")
 
-        self.gridLayout.addWidget(self.orangeButton, 2, 0, 1, 1)
+        self.gridLayout.addWidget(self.orangeButton, 1, 0, 1, 1)
 
         self.purpleButton = QPushButton(self.colorGroupBox)
         self.purpleButton.setObjectName(u"purpleButton")
@@ -402,7 +386,24 @@ class Ui_guiMainWindow(object):
 "}\n"
 "")
 
-        self.gridLayout.addWidget(self.purpleButton, 2, 1, 1, 1)
+        self.gridLayout.addWidget(self.purpleButton, 2, 0, 1, 1)
+
+        self.yellowButton = QPushButton(self.colorGroupBox)
+        self.yellowButton.setObjectName(u"yellowButton")
+        self.yellowButton.setStyleSheet(u"QPushButton {\n"
+"    background-color: rgb(255, 243, 14);\n"
+"    color: white;\n"
+"    border-radius: 8px;\n"
+"    padding: 6px 12px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    background-color: #45a049;\n"
+"}\n"
+"")
+
+        self.gridLayout.addWidget(self.yellowButton, 2, 1, 1, 1)
 
         self.BackRightEncoderText = QLabel(self.centralwidget)
         self.BackRightEncoderText.setObjectName(u"BackRightEncoderText")
@@ -411,6 +412,402 @@ class Ui_guiMainWindow(object):
 "font: 1000 14pt \"FreeMono\";\n"
 "/* qproperty-alignment: AlignCenter; */\n"
 "background-color: transparent;")
+        self.cameraPanel = QGroupBox(self.centralwidget)
+        self.cameraPanel.setObjectName(u"cameraPanel")
+        self.cameraPanel.setGeometry(QRect(660, 280, 511, 271))
+        self.cameraPanel.setStyleSheet(u"QGroupBox {\n"
+"	border: 2px solid rgb(227, 30, 3);\n"
+"	border-radius: 10px;\n"
+"	margin-top: 0.5ex;\n"
+"	font-size: 24px;\n"
+"	font-weight: bold;\n"
+"	font: 700 20pt \"Uroob\";\n"
+"}\n"
+"\n"
+"QGroupBox::title {\n"
+"	color: rgb(227, 30, 3);\n"
+"	subcontrol-origin: margin;\n"
+"	subcontrol-position: top-left;\n"
+"	padding: 0 10px;\n"
+"	font-weight: bold;\n"
+"}")
+        self.gridLayout_2 = QGridLayout(self.cameraPanel)
+        self.gridLayout_2.setObjectName(u"gridLayout_2")
+        self.brightnessSlider1 = QSlider(self.cameraPanel)
+        self.brightnessSlider1.setObjectName(u"brightnessSlider1")
+        self.brightnessSlider1.setMaximumSize(QSize(100, 16777215))
+        self.brightnessSlider1.setStyleSheet(u"/* The filled part (left of handle) */\n"
+"QSlider::sub-page:horizontal {\n"
+"    background: rgb(227, 30, 3); /* Darker green fill */\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"/* The unfilled part (right of handle) */\n"
+"QSlider::add-page:horizontal {\n"
+"    background: #575757;\n"
+"    border-radius: 4px;\n"
+"}")
+        self.brightnessSlider1.setOrientation(Qt.Orientation.Horizontal)
+
+        self.gridLayout_2.addWidget(self.brightnessSlider1, 1, 1, 1, 1)
+
+        self.zoomLabel2 = QLabel(self.cameraPanel)
+        self.zoomLabel2.setObjectName(u"zoomLabel2")
+        self.zoomLabel2.setMinimumSize(QSize(0, 25))
+        self.zoomLabel2.setStyleSheet(u"color: rgb(119, 118, 123);\n"
+"font: 500 15pt \"FreeMono\";\n"
+"qproperty-alignment: AlignLeft;")
+
+        self.gridLayout_2.addWidget(self.zoomLabel2, 6, 0, 1, 1)
+
+        self.brightnessLabel1 = QLabel(self.cameraPanel)
+        self.brightnessLabel1.setObjectName(u"brightnessLabel1")
+        self.brightnessLabel1.setMinimumSize(QSize(0, 25))
+        self.brightnessLabel1.setMaximumSize(QSize(16777215, 35))
+        self.brightnessLabel1.setStyleSheet(u"color: rgb(119, 118, 123);\n"
+"font: 500 15pt \"FreeMono\";\n"
+"qproperty-alignment: AlignLeft;")
+
+        self.gridLayout_2.addWidget(self.brightnessLabel1, 1, 0, 1, 1)
+
+        self.contrastSlider2 = QSlider(self.cameraPanel)
+        self.contrastSlider2.setObjectName(u"contrastSlider2")
+        self.contrastSlider2.setMaximumSize(QSize(100, 16777215))
+        self.contrastSlider2.setStyleSheet(u"/* The filled part (left of handle) */\n"
+"QSlider::sub-page:horizontal {\n"
+"    background: rgb(227, 30, 3); /* Darker green fill */\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"/* The unfilled part (right of handle) */\n"
+"QSlider::add-page:horizontal {\n"
+"    background: #575757;\n"
+"    border-radius: 4px;\n"
+"}")
+        self.contrastSlider2.setOrientation(Qt.Orientation.Horizontal)
+
+        self.gridLayout_2.addWidget(self.contrastSlider2, 7, 1, 1, 1)
+
+        self.zoomLabel1 = QLabel(self.cameraPanel)
+        self.zoomLabel1.setObjectName(u"zoomLabel1")
+        self.zoomLabel1.setMinimumSize(QSize(0, 25))
+        self.zoomLabel1.setStyleSheet(u"color: rgb(119, 118, 123);\n"
+"font: 500 15pt \"FreeMono\";\n"
+"qproperty-alignment: AlignLeft;")
+
+        self.gridLayout_2.addWidget(self.zoomLabel1, 2, 0, 1, 1)
+
+        self.brightnessSlider2 = QSlider(self.cameraPanel)
+        self.brightnessSlider2.setObjectName(u"brightnessSlider2")
+        self.brightnessSlider2.setMaximumSize(QSize(100, 16777215))
+        self.brightnessSlider2.setStyleSheet(u"/* The filled part (left of handle) */\n"
+"QSlider::sub-page:horizontal {\n"
+"    background: rgb(227, 30, 3); /* Darker green fill */\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"/* The unfilled part (right of handle) */\n"
+"QSlider::add-page:horizontal {\n"
+"    background: #575757;\n"
+"    border-radius: 4px;\n"
+"}")
+        self.brightnessSlider2.setOrientation(Qt.Orientation.Horizontal)
+
+        self.gridLayout_2.addWidget(self.brightnessSlider2, 5, 1, 1, 1)
+
+        self.contrastLabel1 = QLabel(self.cameraPanel)
+        self.contrastLabel1.setObjectName(u"contrastLabel1")
+        self.contrastLabel1.setMinimumSize(QSize(0, 25))
+        self.contrastLabel1.setStyleSheet(u"color: rgb(119, 118, 123);\n"
+"font: 500 15pt \"FreeMono\";\n"
+"qproperty-alignment: AlignLeft;")
+
+        self.gridLayout_2.addWidget(self.contrastLabel1, 3, 0, 1, 1)
+
+        self.zoomSlider2 = QSlider(self.cameraPanel)
+        self.zoomSlider2.setObjectName(u"zoomSlider2")
+        self.zoomSlider2.setMaximumSize(QSize(100, 16777215))
+        self.zoomSlider2.setStyleSheet(u"/* The filled part (left of handle) */\n"
+"QSlider::sub-page:horizontal {\n"
+"    background: rgb(227, 30, 3); /* Darker green fill */\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"/* The unfilled part (right of handle) */\n"
+"QSlider::add-page:horizontal {\n"
+"    background: #575757;\n"
+"    border-radius: 4px;\n"
+"}")
+        self.zoomSlider2.setOrientation(Qt.Orientation.Horizontal)
+
+        self.gridLayout_2.addWidget(self.zoomSlider2, 6, 1, 1, 1)
+
+        self.cameraTitleLabel2 = QLabel(self.cameraPanel)
+        self.cameraTitleLabel2.setObjectName(u"cameraTitleLabel2")
+        self.cameraTitleLabel2.setMinimumSize(QSize(0, 30))
+        self.cameraTitleLabel2.setMaximumSize(QSize(16777215, 35))
+        self.cameraTitleLabel2.setStyleSheet(u"color: rgb(119, 118, 123);\n"
+"font: 1000 15pt \"FreeMono\";\n"
+"qproperty-alignment: AlignLeft\n"
+";")
+
+        self.gridLayout_2.addWidget(self.cameraTitleLabel2, 4, 0, 1, 1)
+
+        self.zoomSlider1 = QSlider(self.cameraPanel)
+        self.zoomSlider1.setObjectName(u"zoomSlider1")
+        self.zoomSlider1.setMaximumSize(QSize(100, 16777215))
+        self.zoomSlider1.setStyleSheet(u"/* The filled part (left of handle) */\n"
+"QSlider::sub-page:horizontal {\n"
+"    background: rgb(227, 30, 3); /* Darker green fill */\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"/* The unfilled part (right of handle) */\n"
+"QSlider::add-page:horizontal {\n"
+"    background: #575757;\n"
+"    border-radius: 4px;\n"
+"}")
+        self.zoomSlider1.setOrientation(Qt.Orientation.Horizontal)
+
+        self.gridLayout_2.addWidget(self.zoomSlider1, 2, 1, 1, 1)
+
+        self.brightnessLabel3 = QLabel(self.cameraPanel)
+        self.brightnessLabel3.setObjectName(u"brightnessLabel3")
+        self.brightnessLabel3.setMinimumSize(QSize(0, 25))
+        self.brightnessLabel3.setMaximumSize(QSize(16777215, 30))
+        self.brightnessLabel3.setStyleSheet(u"color: rgb(119, 118, 123);\n"
+"font: 500 15pt \"FreeMono\";\n"
+"qproperty-alignment: AlignLeft;")
+
+        self.gridLayout_2.addWidget(self.brightnessLabel3, 1, 2, 1, 1)
+
+        self.cameraTitleLabel1 = QLabel(self.cameraPanel)
+        self.cameraTitleLabel1.setObjectName(u"cameraTitleLabel1")
+        self.cameraTitleLabel1.setMinimumSize(QSize(0, 30))
+        self.cameraTitleLabel1.setMaximumSize(QSize(16777215, 35))
+        self.cameraTitleLabel1.setStyleSheet(u"color: rgb(119, 118, 123);\n"
+"font: 1000 15pt \"FreeMono\";\n"
+"qproperty-alignment: AlignLeft\n"
+";")
+
+        self.gridLayout_2.addWidget(self.cameraTitleLabel1, 0, 0, 1, 1)
+
+        self.contrastLabel3 = QLabel(self.cameraPanel)
+        self.contrastLabel3.setObjectName(u"contrastLabel3")
+        self.contrastLabel3.setMinimumSize(QSize(0, 25))
+        self.contrastLabel3.setMaximumSize(QSize(16777215, 30))
+        self.contrastLabel3.setStyleSheet(u"color: rgb(119, 118, 123);\n"
+"font: 500 15pt \"FreeMono\";\n"
+"qproperty-alignment: AlignLeft;")
+
+        self.gridLayout_2.addWidget(self.contrastLabel3, 3, 2, 1, 1)
+
+        self.contrastSlider1 = QSlider(self.cameraPanel)
+        self.contrastSlider1.setObjectName(u"contrastSlider1")
+        self.contrastSlider1.setMaximumSize(QSize(100, 16777215))
+        self.contrastSlider1.setStyleSheet(u"/* The filled part (left of handle) */\n"
+"QSlider::sub-page:horizontal {\n"
+"    background: rgb(227, 30, 3); /* Darker green fill */\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"/* The unfilled part (right of handle) */\n"
+"QSlider::add-page:horizontal {\n"
+"    background: #575757;\n"
+"    border-radius: 4px;\n"
+"}")
+        self.contrastSlider1.setOrientation(Qt.Orientation.Horizontal)
+
+        self.gridLayout_2.addWidget(self.contrastSlider1, 3, 1, 1, 1)
+
+        self.cameraTitleLabel3 = QLabel(self.cameraPanel)
+        self.cameraTitleLabel3.setObjectName(u"cameraTitleLabel3")
+        self.cameraTitleLabel3.setMinimumSize(QSize(0, 30))
+        self.cameraTitleLabel3.setMaximumSize(QSize(16777215, 35))
+        self.cameraTitleLabel3.setStyleSheet(u"color: rgb(119, 118, 123);\n"
+"font: 1000 15pt \"FreeMono\";\n"
+"qproperty-alignment: AlignLeft\n"
+";")
+
+        self.gridLayout_2.addWidget(self.cameraTitleLabel3, 0, 2, 1, 1)
+
+        self.zoomLabel3 = QLabel(self.cameraPanel)
+        self.zoomLabel3.setObjectName(u"zoomLabel3")
+        self.zoomLabel3.setMinimumSize(QSize(0, 25))
+        self.zoomLabel3.setMaximumSize(QSize(16777215, 30))
+        self.zoomLabel3.setStyleSheet(u"color: rgb(119, 118, 123);\n"
+"font: 500 15pt \"FreeMono\";\n"
+"qproperty-alignment: AlignLeft;")
+
+        self.gridLayout_2.addWidget(self.zoomLabel3, 2, 2, 1, 1)
+
+        self.brightnessLabel2 = QLabel(self.cameraPanel)
+        self.brightnessLabel2.setObjectName(u"brightnessLabel2")
+        self.brightnessLabel2.setMinimumSize(QSize(0, 25))
+        self.brightnessLabel2.setStyleSheet(u"color: rgb(119, 118, 123);\n"
+"font: 500 15pt \"FreeMono\";\n"
+"qproperty-alignment: AlignLeft;")
+
+        self.gridLayout_2.addWidget(self.brightnessLabel2, 5, 0, 1, 1)
+
+        self.contrastLabel2 = QLabel(self.cameraPanel)
+        self.contrastLabel2.setObjectName(u"contrastLabel2")
+        self.contrastLabel2.setMinimumSize(QSize(0, 25))
+        self.contrastLabel2.setStyleSheet(u"color: rgb(119, 118, 123);\n"
+"font: 500 15pt \"FreeMono\";\n"
+"qproperty-alignment: AlignLeft;")
+
+        self.gridLayout_2.addWidget(self.contrastLabel2, 7, 0, 1, 1)
+
+        self.brightnessSlider3 = QSlider(self.cameraPanel)
+        self.brightnessSlider3.setObjectName(u"brightnessSlider3")
+        self.brightnessSlider3.setMaximumSize(QSize(100, 16777215))
+        self.brightnessSlider3.setStyleSheet(u"/* The filled part (left of handle) */\n"
+"QSlider::sub-page:horizontal {\n"
+"    background: rgb(227, 30, 3); /* Darker green fill */\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"/* The unfilled part (right of handle) */\n"
+"QSlider::add-page:horizontal {\n"
+"    background: #575757;\n"
+"    border-radius: 4px;\n"
+"}")
+        self.brightnessSlider3.setOrientation(Qt.Orientation.Horizontal)
+
+        self.gridLayout_2.addWidget(self.brightnessSlider3, 1, 3, 1, 1)
+
+        self.zoomSlider3 = QSlider(self.cameraPanel)
+        self.zoomSlider3.setObjectName(u"zoomSlider3")
+        self.zoomSlider3.setMaximumSize(QSize(100, 16777215))
+        self.zoomSlider3.setStyleSheet(u"/* The filled part (left of handle) */\n"
+"QSlider::sub-page:horizontal {\n"
+"    background: rgb(227, 30, 3); /* Darker green fill */\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"/* The unfilled part (right of handle) */\n"
+"QSlider::add-page:horizontal {\n"
+"    background: #575757;\n"
+"    border-radius: 4px;\n"
+"}")
+        self.zoomSlider3.setOrientation(Qt.Orientation.Horizontal)
+
+        self.gridLayout_2.addWidget(self.zoomSlider3, 2, 3, 1, 1)
+
+        self.contrastSlider3 = QSlider(self.cameraPanel)
+        self.contrastSlider3.setObjectName(u"contrastSlider3")
+        self.contrastSlider3.setMaximumSize(QSize(100, 16777215))
+        self.contrastSlider3.setStyleSheet(u"/* The filled part (left of handle) */\n"
+"QSlider::sub-page:horizontal {\n"
+"    background: rgb(227, 30, 3); /* Darker green fill */\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"/* The unfilled part (right of handle) */\n"
+"QSlider::add-page:horizontal {\n"
+"    background: #575757;\n"
+"    border-radius: 4px;\n"
+"}")
+        self.contrastSlider3.setOrientation(Qt.Orientation.Horizontal)
+
+        self.gridLayout_2.addWidget(self.contrastSlider3, 3, 3, 1, 1)
+
+        self.cameraTitleLabel4 = QLabel(self.cameraPanel)
+        self.cameraTitleLabel4.setObjectName(u"cameraTitleLabel4")
+        self.cameraTitleLabel4.setMinimumSize(QSize(0, 30))
+        self.cameraTitleLabel4.setMaximumSize(QSize(16777215, 35))
+        self.cameraTitleLabel4.setStyleSheet(u"color: rgb(119, 118, 123);\n"
+"font: 1000 15pt \"FreeMono\";\n"
+"qproperty-alignment: AlignLeft\n"
+";")
+
+        self.gridLayout_2.addWidget(self.cameraTitleLabel4, 4, 2, 1, 1)
+
+        self.brightnessLabel4 = QLabel(self.cameraPanel)
+        self.brightnessLabel4.setObjectName(u"brightnessLabel4")
+        self.brightnessLabel4.setMinimumSize(QSize(0, 25))
+        self.brightnessLabel4.setMaximumSize(QSize(16777215, 30))
+        self.brightnessLabel4.setStyleSheet(u"color: rgb(119, 118, 123);\n"
+"font: 500 15pt \"FreeMono\";\n"
+"qproperty-alignment: AlignLeft;")
+
+        self.gridLayout_2.addWidget(self.brightnessLabel4, 5, 2, 1, 1)
+
+        self.zoomLabel4 = QLabel(self.cameraPanel)
+        self.zoomLabel4.setObjectName(u"zoomLabel4")
+        self.zoomLabel4.setMinimumSize(QSize(0, 25))
+        self.zoomLabel4.setMaximumSize(QSize(16777215, 30))
+        self.zoomLabel4.setStyleSheet(u"color: rgb(119, 118, 123);\n"
+"font: 500 15pt \"FreeMono\";\n"
+"qproperty-alignment: AlignLeft;")
+
+        self.gridLayout_2.addWidget(self.zoomLabel4, 6, 2, 1, 1)
+
+        self.contrastLabel4 = QLabel(self.cameraPanel)
+        self.contrastLabel4.setObjectName(u"contrastLabel4")
+        self.contrastLabel4.setMinimumSize(QSize(0, 25))
+        self.contrastLabel4.setMaximumSize(QSize(16777215, 30))
+        self.contrastLabel4.setStyleSheet(u"color: rgb(119, 118, 123);\n"
+"font: 500 15pt \"FreeMono\";\n"
+"qproperty-alignment: AlignLeft;")
+
+        self.gridLayout_2.addWidget(self.contrastLabel4, 7, 2, 1, 1)
+
+        self.brightnessSlider4 = QSlider(self.cameraPanel)
+        self.brightnessSlider4.setObjectName(u"brightnessSlider4")
+        self.brightnessSlider4.setMaximumSize(QSize(100, 16777215))
+        self.brightnessSlider4.setStyleSheet(u"/* The filled part (left of handle) */\n"
+"QSlider::sub-page:horizontal {\n"
+"    background: rgb(227, 30, 3); /* Darker green fill */\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"/* The unfilled part (right of handle) */\n"
+"QSlider::add-page:horizontal {\n"
+"    background: #575757;\n"
+"    border-radius: 4px;\n"
+"}")
+        self.brightnessSlider4.setOrientation(Qt.Orientation.Horizontal)
+
+        self.gridLayout_2.addWidget(self.brightnessSlider4, 5, 3, 1, 1)
+
+        self.zoomSlider4 = QSlider(self.cameraPanel)
+        self.zoomSlider4.setObjectName(u"zoomSlider4")
+        self.zoomSlider4.setMaximumSize(QSize(100, 16777215))
+        self.zoomSlider4.setStyleSheet(u"/* The filled part (left of handle) */\n"
+"QSlider::sub-page:horizontal {\n"
+"    background: rgb(227, 30, 3); /* Darker green fill */\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"/* The unfilled part (right of handle) */\n"
+"QSlider::add-page:horizontal {\n"
+"    background: #575757;\n"
+"    border-radius: 4px;\n"
+"}")
+        self.zoomSlider4.setOrientation(Qt.Orientation.Horizontal)
+
+        self.gridLayout_2.addWidget(self.zoomSlider4, 6, 3, 1, 1)
+
+        self.contrastSlider4 = QSlider(self.cameraPanel)
+        self.contrastSlider4.setObjectName(u"contrastSlider4")
+        self.contrastSlider4.setMaximumSize(QSize(100, 16777215))
+        self.contrastSlider4.setStyleSheet(u"/* The filled part (left of handle) */\n"
+"QSlider::sub-page:horizontal {\n"
+"    background: rgb(227, 30, 3); /* Darker green fill */\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"/* The unfilled part (right of handle) */\n"
+"QSlider::add-page:horizontal {\n"
+"    background: #575757;\n"
+"    border-radius: 4px;\n"
+"}")
+        self.contrastSlider4.setOrientation(Qt.Orientation.Horizontal)
+
+        self.gridLayout_2.addWidget(self.contrastSlider4, 7, 3, 1, 1)
+
         guiMainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QStatusBar(guiMainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -441,12 +838,29 @@ class Ui_guiMainWindow(object):
         self.OdomValueLabel.setText(QCoreApplication.translate("guiMainWindow", u"-", None))
         self.KillSwitchButton.setText(QCoreApplication.translate("guiMainWindow", u"Kill", None))
         self.colorGroupBox.setTitle(QCoreApplication.translate("guiMainWindow", u"Color", None))
-        self.blueButton.setText("")
-        self.yellowButton.setText("")
         self.greenButton.setText("")
         self.redButton.setText("")
+        self.blueButton.setText("")
         self.orangeButton.setText("")
         self.purpleButton.setText("")
+        self.yellowButton.setText("")
         self.BackRightEncoderText.setText(QCoreApplication.translate("guiMainWindow", u"0", None))
+        self.cameraPanel.setTitle(QCoreApplication.translate("guiMainWindow", u"Camera Panel", None))
+        self.zoomLabel2.setText(QCoreApplication.translate("guiMainWindow", u"Zoom", None))
+        self.brightnessLabel1.setText(QCoreApplication.translate("guiMainWindow", u"Brightness", None))
+        self.zoomLabel1.setText(QCoreApplication.translate("guiMainWindow", u"Zoom", None))
+        self.contrastLabel1.setText(QCoreApplication.translate("guiMainWindow", u"Contrast", None))
+        self.cameraTitleLabel2.setText(QCoreApplication.translate("guiMainWindow", u"Camera 2", None))
+        self.brightnessLabel3.setText(QCoreApplication.translate("guiMainWindow", u"Brightness", None))
+        self.cameraTitleLabel1.setText(QCoreApplication.translate("guiMainWindow", u"Camera 1", None))
+        self.contrastLabel3.setText(QCoreApplication.translate("guiMainWindow", u"Contrast", None))
+        self.cameraTitleLabel3.setText(QCoreApplication.translate("guiMainWindow", u"Camera 3", None))
+        self.zoomLabel3.setText(QCoreApplication.translate("guiMainWindow", u"Zoom", None))
+        self.brightnessLabel2.setText(QCoreApplication.translate("guiMainWindow", u"Brightness", None))
+        self.contrastLabel2.setText(QCoreApplication.translate("guiMainWindow", u"Contrast", None))
+        self.cameraTitleLabel4.setText(QCoreApplication.translate("guiMainWindow", u"Camera 4", None))
+        self.brightnessLabel4.setText(QCoreApplication.translate("guiMainWindow", u"Brightness", None))
+        self.zoomLabel4.setText(QCoreApplication.translate("guiMainWindow", u"Zoom", None))
+        self.contrastLabel4.setText(QCoreApplication.translate("guiMainWindow", u"Contrast", None))
     # retranslateUi
 

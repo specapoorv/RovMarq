@@ -43,6 +43,8 @@ def main():
     bridge.encoder_angles_updated.connect(window.update_encoder_angles)
     bridge.start_csv_watcher("waypoints.csv")
     bridge.csv_changed.connect(window.load_waypoints)
+    bridge.frequency_updated.connect(window.update_frequency)
+    bridge.noise_updated.connect(window.update_noise)
 
 
     window.kill_signal.connect(bridge.kill_handler) #for kill switch

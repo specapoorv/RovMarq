@@ -128,6 +128,14 @@ class MainWindow(QMainWindow):
         self.ui.BackLeftEncoderText.setText(f"{bl}")
         self.ui.BackRightEncoderText.setText(f"{br}")
 
+    
+    def update_frequency(self, frequency):
+        self.ui.frequencyValueLabel.setText(f"{frequency} GHz")
+        
+
+    def update_noise(self, noise):
+        self.ui.noiseValueLabel.setText(f"{noise}")
+
     # ===============================
     # UI ACTIONS
     # ===============================

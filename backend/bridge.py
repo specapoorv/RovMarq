@@ -59,6 +59,9 @@ class ROSQtBridge(Node, QObject):
     mode_updated = Signal(int)
     twist_updated = Signal(float, float)
     encoder_angles_updated = Signal(float, float, float, float)
+    frequency_updated = Signal(float)
+    noise_updated = Signal(float)
+
     csv_changed = Signal(str)
 
     def __init__(self):
@@ -95,6 +98,7 @@ class ROSQtBridge(Node, QObject):
         self.create_subscription(Int8, "/mode", self.mode_callback, self.reliable)
         self.create_subscription(String, "/config", self.config_callback, self.reliable)
         self.create_subscription(Float32MultiArray, "/vel", self.vel_callback, self.reliable)
+        self.create_subscription(Float32MultiArray, "/mikrotik_info", self.mikrotik_info_callback, 10)
 
         self.motor_publisher = self.create_publisher(Int32MultiArray, "/motor_pwm", 10)
 
@@ -147,6 +151,10 @@ class ROSQtBridge(Node, QObject):
 
     def config_callback(self, config: String):
         self.config_updated.emit(config.data)
+
+    def mikrotik_info_callback(self, info: Float32MultiArray):
+        self.frequency_updated.emit(info.data[0])
+        self.noise_updated.emit(info.data[1])
 
     def kill_handler(self, killed):
         if killed:

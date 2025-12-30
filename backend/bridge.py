@@ -2,10 +2,10 @@ from PySide6.QtCore import QObject, Signal
 from rclpy.node import Node
 from sensor_msgs.msg import NavSatFix
 from geometry_msgs.msg import PoseArray
-from std_msgs.msg import Float32, Int8, String
+from std_msgs.msg import Float32, Int8, String, Float64
 from nav_msgs.msg import Odometry
 from rclpy.qos import QoSProfile, ReliabilityPolicy
-
+from geometry_msgs.msg import PoseArray
 """ monkey patching numpy here in newer versions np.float is deprecated """
 import numpy as np
 if not hasattr(np, 'float'):
@@ -17,10 +17,12 @@ from std_msgs.msg import Int32MultiArray
 from std_msgs.msg import Float32MultiArray
 from std_srvs.srv import Trigger
 import subprocess
-
+import csv
+import os
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import time
+from backend.csv_logger import CSVLogger
 
 
 class CSVHandler(FileSystemEventHandler):
@@ -35,6 +37,7 @@ class CSVHandler(FileSystemEventHandler):
             now = time.time()
             if now - self.last_emit > 0.3:  # debounce
                 self.last_emit = now
+                print("emitting signals")
                 self.signal.emit(self.csv_path)
 
 
@@ -56,36 +59,47 @@ class ROSQtBridge(Node, QObject):
     mode_updated = Signal(int)
     twist_updated = Signal(float, float)
     encoder_angles_updated = Signal(float, float, float, float)
-
     csv_changed = Signal(str)
 
     def __init__(self):
         Node.__init__(self, "ros_qt_bridge")
         QObject.__init__(self)
 
+
+        self.csv_observer = None
+        self.csv_file_path = "waypoints.csv"
+
+        self.latest_gps = None  # (lat, lon)
+        self.waypoint_id = 0
+        self.last_waypoint_id = None
+        self.csv_logger = CSVLogger(self.csv_file_path)
+        self.last_auto_wp_id = None
+        self.gps_timestamp = None
+
+
         self.best_effort = QoSProfile(
             depth=10,
             reliability=ReliabilityPolicy.BEST_EFFORT
         )
 
-        self.create_subscription(NavSatFix, "/gps_fix", self.gps_callback, 10)
-        self.create_subscription(Float32, "/global_north", self.yaw_callback, 10)
-        self.create_subscription(Odometry, "/rtabmap/odom", self.odom_callback, self.best_effort)
-        self.create_subscription(Float32, "/battery_topic", self.battery_callback, 10)
-        self.create_subscription(Float32MultiArray, "/enc_auto", self.steering_callback, 10)
-        self.create_subscription(Int8, "/mode", self.mode_callback, 10)
-        self.create_subscription(String, "/config", self.config_callback, 10)
-        self.create_subscription(Float32MultiArray, "/vel", self.vel_callback, 10)
-
-        self.motor_publisher = self.create_publisher(
-            Int32MultiArray,
-            "/motor_pwm",
-            10
+        self.reliable = QoSProfile(
+            depth=10,
+            reliability=ReliabilityPolicy.RELIABLE
         )
 
-        self.csv_observer = None
+        self.create_subscription(NavSatFix, "/gps_fix", self.gps_callback, 10)
+        self.create_subscription(Float64, "/global_north", self.yaw_callback, 10)
+        self.create_subscription(Odometry, "/px4_odom", self.odom_callback, self.best_effort)
+        self.create_subscription(Float32, "/battery_topic", self.battery_callback, 10)
+        self.create_subscription(Float32MultiArray, "/enc_auto", self.steering_callback, self.reliable)
+        self.create_subscription(Int8, "/mode", self.mode_callback, self.reliable)
+        self.create_subscription(String, "/config", self.config_callback, self.reliable)
+        self.create_subscription(Float32MultiArray, "/vel", self.vel_callback, self.reliable)
 
-    # ===== CSV WATCHER START =====
+        self.motor_publisher = self.create_publisher(Int32MultiArray, "/motor_pwm", 10)
+
+        self.autolog_timer = self.create_timer(5.0, self.autolog_waypoint)
+
     def start_csv_watcher(self, csv_path):
         handler = CSVHandler(self.csv_changed, csv_path)
         self.csv_observer = Observer()
@@ -98,16 +112,19 @@ class ROSQtBridge(Node, QObject):
 
     # ===== ROS CALLBACKS =====
     def gps_callback(self, msg: NavSatFix):
-        self.get_logger().info(f"{msg.latitude}, {msg.longitude}")
+        self.latest_gps = (msg.latitude, msg.longitude)
+        self.gps_timestamp = time.time()
         self.gps_updated.emit(msg.latitude, msg.longitude)
 
     def yaw_callback(self, msg):
         yaw = msg.data
+        print("updating yaw")
         self.yaw_updated.emit(yaw)
 
     def vel_callback(self, twist: Float32MultiArray):
         vel = twist.data[0]
         omega = twist.data[1]
+        
         self.twist_updated.emit(vel, omega)
 
     def odom_callback(self, msg: Odometry):
@@ -139,13 +156,21 @@ class ROSQtBridge(Node, QObject):
             self.motor_publisher.publish(pwm_msg)
 
     def colour_override_handler(self, colour_name):
-        cmd = ["ros2", "param", "set", "/yolo_publisher", "colour_override", colour_name]
-        try:
-            subprocess.Popen(cmd)
-            print(f"ROS2 param set called: {cmd}")
-        except Exception as e:
-            print("Failed to set ROS2 param:", e)
 
+        # cmd = [
+        #     'sshpass -p "anveshak" ssh orin@10.42.0.253',
+        #     # f"ros2 param set /yolo_publisher colour_override {colour_name}",
+        #     # "exit"
+        # ]
+        # try:
+        #     subprocess.Popen(cmd)
+        #     print(f"ROS2 param set called: {cmd}")
+        # except Exception as e:
+        #     print("Failed to set ROS2 param:", e)
+
+        subprocess.run(['sshpass -p "anveshak" ssh orin@10.42.0.253', "echo 'hello'", f"ros2 param set /yolo_publisher colour_override {colour_name}", "exit"], shell=True)
+        subprocess.run(f"ros2 param set /yolo_publisher colour_override {colour_name}", shell=True)
+        subprocess.run("exit", shell=True)
 
     def steering_callback(self, msg):
         data = msg.data
@@ -156,3 +181,32 @@ class ROSQtBridge(Node, QObject):
 
         self.encoder_angles_updated.emit(fl, fr, bl, br)
         self.steering_angles.emit(fl, fr, bl, br)
+
+    def autolog_waypoint(self):
+        
+        if self.gps_timestamp is None:
+            return
+        
+        if (time.time() - self.gps_timestamp) > 1.0:
+            self.latest_gps = None
+
+
+        if self.latest_gps is None:
+            return
+        
+
+        lat, lon = self.latest_gps
+
+        # 1. Add marker (NOT a mission waypoint)
+        new_id = self.csv_logger.add_marker(
+            lat=lat,
+            lon=lon,
+            label="waypoint"   # visual / semantic label only
+        )
+
+        # 2. Connect to previous auto-logged marker
+        if self.last_auto_wp_id is not None:
+            self.csv_logger.add_connection(self.last_auto_wp_id, new_id)
+
+        self.last_auto_wp_id = new_id
+

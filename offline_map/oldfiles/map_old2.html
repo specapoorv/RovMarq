@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Leaflet Map with Waypoints & Menus</title>
+
+  <link rel="stylesheet" href="leaflet/dist/leaflet.css" />
+  <script src="leaflet/dist/leaflet.js"></script>
+  <script src="qwebchannel.js"></script>
+
+  <style>
+    html, body, #map {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+    }
+
+    .marker-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      white-space: nowrap;
+      pointer-events: auto;
+    }
+
+    .marker-label {
+      margin-top: 2px;
+      color: white;
+      font-weight: bold;
+      text-shadow: 0 0 3px black;
+    }
+
+    /* Marker menu */
+    #markerMenu, #globalMenu {
+      position: absolute;
+      display: none;
+      background: white;
+      border: 1px solid gray;
+      padding: 5px;
+      z-index: 1000;
+      border-radius: 4px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+    #markerMenu div, #globalMenu div {
+      padding: 3px;
+      cursor: pointer;
+    }
+    #markerMenu div:hover, #globalMenu div:hover {
+      background-color: #eee;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <!-- Left-click marker menu -->
+  <div id="markerMenu">
+    <div id="saveWaypoint">Save Waypoint</div>
+    <div id="connectMarker">Connect Marker</div>
+    <div id="connectWithSelected" style="display: none;">Connect with Selected</div>
+    <div id="disconnectMarker" style="display: none;">Disconnect Marker</div>
+  </div>
+
+  <!-- Right-click global menu -->
+  <div id="globalMenu">
+    <div id="resetWaypoints">Reset Waypoints</div>
+    <div id="disconnectAll">Disconnect All Markers</div>
+    <div id="newWaypointHere">Add New Waypoint Here</div>
+  </div>
+
+  <script>
+    // ---------------- QWebChannel Setup ----------------
+    let backend = null;
+    new QWebChannel(qt.webChannelTransport, function(channel) {
+        backend = channel.objects.mapBackend;
+        backend.onPageReady();
+    });
+
+    // ---------------- Map Setup ----------------
+    const map = L.map("map", { minZoom: 2, maxZoom: 24 }).setView([12.9916, 80.2346], 16);
+
+    L.tileLayer('OSMPublicTransport/{z}/{x}/{y}.png', {
+      maxZoom: 24,
+      maxNativeZoom: 19,
+      minZoom: 0,
+      attribution: 'ANVESHAK'
+    }).addTo(map);
+
+    map.getContainer().addEventListener("contextmenu", e => e.preventDefault());
+
+    const iconImages = { waypoint: "icons/waypoint.png", default: "icons/gray_cone.png" };
+
+    function createIcon(label, zoom) {
+      const size = 14 * Math.max(0.6, Math.min(zoom / 15, 1.4));
+      const iconUrl = iconImages[label] || iconImages.default;
+      return L.divIcon({
+        html: `<div class="marker-container">
+                 <img src="${iconUrl}" style="width:${size}px; height:${size}px; pointer-events:none;">
+                 <div class="marker-label" style="pointer-events:none;">${label}</div>
+               </div>`,
+        className: "",
+        iconSize: [size, size + 16],
+        iconAnchor: [size / 2, size / 2]
+      });
+    }
+
+    const roverMarker = L.marker([12.992152, 80.232440], { icon: createIcon("rover", map.getZoom()) }).addTo(map);
+
+    let markers = [];
+    let selectedMarker = null;
+    let currentClickedMarker = null;
+    let connections = [];
+    let waypoints = [];
+    const markerMenu = document.getElementById("markerMenu");
+    const globalMenu = document.getElementById("globalMenu");
+
+    function addMarkers(markerList) {
+      markerList.forEach(m => {
+        const marker = L.marker([m.lat, m.lon], { icon: createIcon(m.label || "default", map.getZoom()) }).addTo(map);
+
+        marker.on("click", event => showMarkerMenu(m, event));
+        marker.on("contextmenu", e => {
+            if (backend) {
+                backend.receiveFromJS("markerRightClick", JSON.stringify({id: m.id, lat: m.lat, lon: m.lon}));
+            }
+        });
+
+        markers.push({ id: m.id, marker, label: m.label, lat: m.lat, lon: m.lon });
+      });
+    }
+
+    function clearMarkers() {
+      markers.forEach(m => map.removeLayer(m.marker));
+      markers = [];
+    }
+
+    map.on("zoomend", () => {
+      const zoom = map.getZoom();
+      roverMarker.setIcon(createIcon("rover", zoom));
+      markers.forEach(m => m.marker.setIcon(createIcon(m.label || "default", zoom)));
+    });
+
+    window.updateRoverPosition = (lat, lon) => {
+      roverMarker.setLatLng([lat, lon]);
+      map.panTo([lat, lon], { animate: true });
+    };
+    window.addMarkers = addMarkers;
+    window.clearMarkers = clearMarkers;
+
+    // ---------------- Left-click marker menu ----------------
+    map.on("click", () => {
+      markerMenu.style.display = "none";
+      globalMenu.style.display = "none";
+    });
+
+    function showMarkerMenu(marker, event) {
+      currentClickedMarker = marker;
+      markerMenu.style.left = event.originalEvent.pageX + "px";
+      markerMenu.style.top = event.originalEvent.pageY + "px";
+      markerMenu.style.display = "block";
+
+      const saveBtn = document.getElementById("saveWaypoint");
+      saveBtn.textContent = waypoints.includes(marker.id) ? "Delete Waypoint" : "Save Waypoint";
+
+      const connectWith = document.getElementById("connectWithSelected");
+      connectWith.style.display = (selectedMarker && selectedMarker !== marker) ? "block" : "none";
+
+      const disconnect = document.getElementById("disconnectMarker");
+      disconnect.style.display = connections.some(c => c.from === marker.id || c.to === marker.id) ? "block" : "none";
+    }
+
+    document.getElementById("saveWaypoint").onclick = () => {
+      const id = currentClickedMarker.id;
+      if (waypoints.includes(id)) {
+        waypoints = waypoints.filter(w => w !== id);
+        if (backend) backend.receiveFromJS("waypointDeleted", JSON.stringify({id, waypoints: [...waypoints]}));
+      } else {
+        waypoints.push(id);
+        if (backend) backend.receiveFromJS("waypointSaved", JSON.stringify({id, waypoints: [...waypoints]}));
+      }
+      markerMenu.style.display = "none";
+    };
+
+    document.getElementById("connectMarker").onclick = () => {
+      selectedMarker = currentClickedMarker;
+      if (backend) backend.receiveFromJS("markerSelected", JSON.stringify({id: selectedMarker.id}));
+      markerMenu.style.display = "none";
+    };
+
+    document.getElementById("connectWithSelected").onclick = () => {
+      const line = L.polyline([
+        [selectedMarker.lat, selectedMarker.lon],
+        [currentClickedMarker.lat, currentClickedMarker.lon]
+      ], { color: 'red', weight: 3 }).addTo(map);
+
+      connections.push({ line, from: selectedMarker.id, to: currentClickedMarker.id });
+      if (backend) backend.receiveFromJS("markersConnected", JSON.stringify({
+          from: selectedMarker.id,
+          to: currentClickedMarker.id,
+          fromLat: selectedMarker.lat,
+          fromLon: selectedMarker.lon,
+          toLat: currentClickedMarker.lat,
+          toLon: currentClickedMarker.lon
+      }));
+      selectedMarker = null;
+      markerMenu.style.display = "none";
+    };
+
+    document.getElementById("disconnectMarker").onclick = () => {
+      const removed = [];
+      connections = connections.filter(c => {
+        if (c.from === currentClickedMarker.id || c.to === currentClickedMarker.id) {
+          map.removeLayer(c.line);
+          removed.push({from: c.from, to: c.to});
+          return false;
+        }
+        return true;
+      });
+      if (backend) backend.receiveFromJS("markerDisconnected", JSON.stringify({markerId: currentClickedMarker.id, disconnected: removed}));
+      markerMenu.style.display = "none";
+    };
+
+    // ---------------- Right-click global menu ----------------
+    map.on("contextmenu", e => {
+      globalMenu.style.left = e.originalEvent.pageX + "px";
+      globalMenu.style.top = e.originalEvent.pageY + "px";
+      globalMenu.style.display = "block";
+      globalMenu.dataset.lat = e.latlng.lat;
+      globalMenu.dataset.lon = e.latlng.lng;
+      if (backend) backend.receiveFromJS("mapRightClick", JSON.stringify({lat: e.latlng.lat, lon: e.latlng.lng}));
+    });
+
+    document.getElementById("resetWaypoints").onclick = () => {
+      waypoints = [];
+      if (backend) backend.receiveFromJS("waypointsReset", JSON.stringify({}));
+      globalMenu.style.display = "none";
+    };
+
+    document.getElementById("disconnectAll").onclick = () => {
+      connections.forEach(c => map.removeLayer(c.line));
+      connections = [];
+      if (backend) backend.receiveFromJS("allConnectionsRemoved", JSON.stringify({}));
+      globalMenu.style.display = "none";
+    };
+
+    document.getElementById("newWaypointHere").onclick = () => {
+      const lat = parseFloat(globalMenu.dataset.lat);
+      const lon = parseFloat(globalMenu.dataset.lon);
+      const newId = markers.length ? Math.max(...markers.map(m => m.id)) + 1 : 1;
+
+      const newMarker = { id: newId, lat, lon, label: "Waypoint" };
+      addMarkers([newMarker]);
+      waypoints.push(newId);
+      if (backend) backend.receiveFromJS("newWaypointAdded", JSON.stringify({id: newId, lat, lon}));
+      globalMenu.style.display = "none";
+    };
+
+    // ---------------- Demo markers ----------------
+    addMarkers([
+      { id: 1, lat: 12.9918, lon: 80.2348, label: "waypoint" },
+      { id: 2, lat: 12.9925, lon: 80.2335, label: "A" },
+      { id: 3, lat: 12.9930, lon: 80.2350, label: "B" }
+    ]);
+  </script>
+</body>
+</html>

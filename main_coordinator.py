@@ -1,27 +1,24 @@
 # main.py
 import sys
 from threading import Thread
-
+import time
 import rclpy
 from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import Qt
-
 from frontend.Qwindow import MainWindow            # Ui logic
 from backend.bridge import ROSQtBridge             #ROSQt bridge
+from PySide6.QtCore import QTimer
+
+
 # from backend.async_db_writer import InfluxDBWriter   #Async DB writer
 # from backend.fetchers.gps import gpsFetcher
-#from components.GpsMapWidget import SimpleMapWidget  # Simple 2D map
-#from components.RoverWheelWidget import RoverWheelWidget   # Simple 2D map
+
 
 
 def main():
     rclpy.init()
     app = QApplication(sys.argv)
-
     window = MainWindow()
- 
-    # map_widget = SimpleMapWidget(width=400, height=400)
-
     bridge = ROSQtBridge()  # subscribes to all topics
 
     # influx_writer = InfluxDBWriter(
@@ -32,7 +29,6 @@ def main():
     #     flush_interval=1.0
     # )
     # influx_writer.start()  # start writer thread
-    #this is creating anpther instance of widget but it already exists by promoting it
 
 
     bridge.gps_updated.connect(window.update_gps)
@@ -51,6 +47,13 @@ def main():
 
     window.kill_signal.connect(bridge.kill_handler) #for kill switch
     window.colour_signal.connect(bridge.colour_override_handler)
+  
+        # --- Periodic waypoint refresh ---
+    refresh_timer = QTimer()
+    refresh_timer.setInterval(1000)  # ms (adjust if needed)
+    refresh_timer.timeout.connect(window.load_waypoints)
+    refresh_timer.start()
+
     
 
     # #async writing 

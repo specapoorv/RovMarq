@@ -2,11 +2,12 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Offline Leaflet Map with Pre-rotated Rover</title>
+  <title>Offline Leaflet Map with Pre-rotated Rover + Waypoints</title>
 
   <!-- Leaflet local -->
   <link rel="stylesheet" href="leaflet/dist/leaflet.css" />
   <script src="leaflet/dist/leaflet.js"></script>
+  <script src="qwebchannel.js"></script>
 
   <style>
     html, body, #map {
@@ -20,7 +21,7 @@
       flex-direction: column;
       align-items: center;
       white-space: nowrap;
-      pointer-events: none;
+      pointer-events: auto;
     }
 
     .marker-label {
@@ -29,198 +30,409 @@
       font-weight: bold;
       text-shadow: 0 0 3px black;
     }
+
+    /* Marker menu */
+    #markerMenu, #globalMenu {
+      position: absolute;
+      display: none;
+      background: white;
+      border: 1px solid gray;
+      padding: 5px;
+      z-index: 1000;
+      border-radius: 4px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+    #markerMenu div, #globalMenu div {
+      padding: 3px;
+      cursor: pointer;
+    }
+    #markerMenu div:hover, #globalMenu div:hover {
+      background-color: #eee;
+    }
   </style>
 </head>
 
 <body>
   <div id="map"></div>
 
-  <script>
-    console.log("Map loading with pre-rotated rover images...");
+  <!-- Left-click marker menu -->
+  <div id="markerMenu">
+    <div id="saveWaypoint">Save Waypoint</div>
+    <div id="connectMarker">Connect Marker</div>
+    <div id="connectWithSelected" style="display: none;">Connect with Selected</div>
+    <div id="disconnectMarker" style="display: none;">Disconnect Marker</div>
+  </div>
 
-    /* ===============================
-       🗺️ MAP SETUP
-    =============================== */
-    var map = L.map("map", {
-      minZoom: 2,
-      maxZoom: 24
-    }).setView([12.991600, 80.234600], 16);
+  <!-- Right-click global menu -->
+  <div id="globalMenu">
+    <div id="resetWaypoints">Reset Waypoints</div>
+    <div id="disconnectAll">Disconnect All Markers</div>
+    <div id="newWaypointHere">Add New Waypoint Here</div>
+    </div>
+    <button id="followRoverBtn"
+    style="
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 1001;
+      padding: 6px 10px;
+      background: #222;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    ">
+    Follow Rover
+  </button>
 
-    L.tileLayer('OSMPublicTransport/{z}/{x}/{y}.png', {
-      maxZoom: 24,
-      maxNativeZoom: 19,
-      minZoom: 0,
-      attribution: 'ANVESHAK'
-    }).addTo(map);
+<script>
+  let followRover = true;
 
-    /* ===============================
-       🖼️ ICON DEFINITIONS
-    =============================== */
-    var iconImages = {
-      "red_cone": "icons/red_cone.png",
-      "yellow_cone": "icons/yellow_cone.png",
-      "blue_cone": "icons/blue_cone.png",
-      "green_cone": "icons/green_cone.png",
-      "orange_cone": "icons/orange_cone.png",
-      "purple_cone": "icons/purple_cone.png",
-      "unknown_cone": "icons/gray_cone.png",
-      "red_waypoint": "icons/red_waypoint.png",
-      "yellow_waypoint": "icons/yellow_waypoint.png",
-      "blue_waypoint": "icons/blue_waypoint.png",
-      "green_waypoint": "icons/green_waypoint.png",
-      "orange_waypoint": "icons/orange_waypoint.png",
-      "purple_waypoint": "icons/purple_waypoint.png",
-      "unknown_waypoint": "icons/gray_waypoint.png"
-    };
+  function enableFollowRover() {
+    followRover = true;
+    document.getElementById("followRoverBtn").style.opacity = "1.0";
 
-    var markers = [];
-    var currentYaw = 0;
+    // instantly snap to rover
+    const pos = roverMarker.getLatLng();
+    map.panTo(pos, { animate: true });
+  }
 
-    /* ===============================
-       🔄 ROVER ANGLE FUNCTIONS
-    =============================== */
-    
-    // Get the closest rover image for a given angle
-    function getRoverImageForAngle(angleDeg) {
-      // Normalize angle to 0-359
-      angleDeg = ((angleDeg % 360) + 360) % 360;
-      
-      // Round to nearest 10 degrees
-      var roundedAngle = Math.round(angleDeg / 10) * 10;
-      
-      // Handle 360 -> 0
-      if (roundedAngle >= 360) roundedAngle = 0;
-      
-      // Format with leading zeros (000, 010, 020, etc.)
-      var angleStr = String(roundedAngle).padStart(3, '0');
-      
-      return `icons/rover_angles/rover_${angleStr}.png`;
-    }
+  function disableFollowRover() {
+    followRover = false;
+    document.getElementById("followRoverBtn").style.opacity = "0.6";
+  }
 
-    function createIcon(label, zoom) {
-      if (!label || label === "NaN") {
-        label = "gray_cone";
-      }
 
-      var baseSize = 12;
-      var scale = zoom / 15;
-      scale = Math.max(0.6, Math.min(scale, 1.4));
+  // ---------------- QWebChannel Setup ----------------
+  let backend = null;
+  new QWebChannel(qt.webChannelTransport, function(channel) {
+      backend = channel.objects.mapBackend;
+      backend.onPageReady();
+  });
 
-      var size = baseSize * scale;
-      var fontSize = 10 * scale;
-      var iconUrl = iconImages[label] || iconImages["gray_cone"];
+  // ---------------- Map Setup ----------------
+  const map = L.map("map", { minZoom: 2, maxZoom: 24 }).setView([12.9916, 80.2346], 16);
 
-      var html = `
-        <div class="marker-container">
-          <img src="${iconUrl}" style="width:${size}px; height:${size}px;" />
-          <div class="marker-label" style="font-size:${fontSize}px;">
-            ${label}
-          </div>
-        </div>
-      `;
+  L.tileLayer('OSMPublicTransport/{z}/{x}/{y}.png', {
+    maxZoom: 24,
+    maxNativeZoom: 19,
+    minZoom: 0,
+    attribution: 'ANVESHAK'
+  }).addTo(map);
 
-      return L.divIcon({
-        html: html,
-        className: "",
-        iconSize: [size, size + fontSize + 4],
-        iconAnchor: [size / 2, size / 2]
-      });
-    }
+  map.getContainer().addEventListener("contextmenu", e => e.preventDefault());
 
-    function createRoverIcon(zoom, angleDeg) {
-      var baseSize = 48;
-      var scale = zoom / 15;
-      scale = Math.max(0.6, Math.min(scale, 1.4));
-      var size = baseSize * scale;
+  // ---------------- Icons ----------------
+  const iconImages = {
+    "red_pickup": "icons/red_cone.png",
+    "yellow_pickup": "icons/yellow_cone.png",
+    "blue_pickup": "icons/blue_cone.png",
+    "green_pickup": "icons/green_cone.png",
+    "orange_pickup": "icons/orange_cone.png",
+    "purple_pickup": "icons/purple_cone.png",
+    "unknown_pickup": "icons/gray_cone.png",
+    "red_delivery": "icons/red_cone.png",
+    "yellow_delivery": "icons/yellow_cone.png",
+    "blue_delivery": "icons/blue_cone.png",
+    "green_delivery": "icons/green_cone.png",
+    "orange_delivery": "icons/orange_cone.png",
+    "purple_delivery": "icons/purple_cone.png",
+    "unknown_delivery": "icons/gray_cone.png",
+    "waypoint": "icons/waypoint.png",
+    "waypoint_selected": "icons/waypoint_selected.png",
+    "default": "icons/gray_cone.png"
+  };
 
-      // Get the appropriate pre-rotated image
-      var iconUrl = getRoverImageForAngle(angleDeg);
+  // ---------------- ROVER PRE-ROTATED IMAGES ----------------
+  let currentYaw = 0;
 
-      return L.icon({
-        iconUrl: iconUrl,
-        iconSize: [size, size],
-        iconAnchor: [size / 2, size / 2]
-      });
-    }
+  function getRoverImageForAngle(angleDeg) {
+    angleDeg = ((angleDeg % 360) + 360) % 360;
+    var roundedAngle = Math.round(angleDeg / 10) * 10;
+    if (roundedAngle >= 360) roundedAngle = 0;
+    var angleStr = String(roundedAngle).padStart(3, '0');
+    return `icons/rover_angles/rover_${angleStr}.png`;
+  }
 
-    // Create rover marker
-    var roverMarker = L.marker(
-      [12.992152, 80.232440],
-      { icon: createRoverIcon(map.getZoom(), 0) }
-    ).addTo(map);
+  function createRoverIcon(zoom, angleDeg) {
+    var baseSize = 48;
+    var scale = Math.max(0.6, Math.min(zoom / 15, 1.4));
+    var size = baseSize * scale;
+    var iconUrl = getRoverImageForAngle(angleDeg);
+    return L.icon({
+      iconUrl: iconUrl,
+      iconSize: [size, size],
+      iconAnchor: [size / 2, size / 2]
+    });
+  }
 
-    console.log("✓ Rover marker created with pre-rotated images");
+  // ---------------- MARKER ICON ----------------
+  function createIcon(label, zoom) {
+    if (!label || label === "NaN") label = "default";
+    const baseSize = 12;
+    const scale = Math.max(0.6, Math.min(zoom / 15, 1.4));
+    const size = baseSize * scale;
+    const fontSize = 10 * scale;
+    const iconUrl = iconImages[label] || iconImages["default"];
 
-    /* ===============================
-       🎯 UPDATE FUNCTIONS
-    =============================== */
+    const html = `
+      <div class="marker-container">
+        <img src="${iconUrl}" style="width:${size}px; height:${size}px;" />
+        <div class="marker-label" style="font-size:${fontSize}px;">${label}</div>
+      </div>
+    `;
 
-    function updateRoverPosition(lat, lon) {
-      console.log(`updateRoverPosition: lat=${lat}, lon=${lon}`);
-      roverMarker.setLatLng([lat, lon]);
+    return L.divIcon({
+      html: html,
+      className: "",
+      iconSize: [size, size + fontSize + 4],
+      iconAnchor: [size / 2, size / 2]
+    });
+  }
+
+  // ---------------- ROVER MARKER ----------------
+  const roverMarker = L.marker([12.992152, 80.232440], { icon: createRoverIcon(map.getZoom(), 0) }).addTo(map);
+
+  function updateRoverPosition(lat, lon) {
+    roverMarker.setLatLng([lat, lon]);
+
+    if (followRover) {
       map.panTo([lat, lon], { animate: true });
     }
+  }
 
-    function updateRoverYaw(yawDeg) {
-      console.log(`updateRoverYaw: ${yawDeg}°`);
-      
-      if (yawDeg !== undefined && !isNaN(yawDeg)) {
-        currentYaw = yawDeg;
-        
-        // Update icon to the correct pre-rotated image
-        var newIcon = createRoverIcon(map.getZoom(), yawDeg);
-        roverMarker.setIcon(newIcon);
-        
-        console.log(`  Using image: ${getRoverImageForAngle(yawDeg)}`);
-      }
+
+  function updateRoverYaw(yawDeg) {
+    if (yawDeg !== undefined && !isNaN(yawDeg)) {
+      currentYaw = yawDeg;
+      roverMarker.setIcon(createRoverIcon(map.getZoom(), yawDeg));
     }
+  }
 
-    function addMarkers(markerList) {
-      console.log("Adding markers:", markerList.length);
-      markerList.forEach(m => {
-        var marker = L.marker(
-          [m.lat, m.lon],
-          { icon: createIcon(m.label, map.getZoom()) }
+  // ---------------- MARKERS, CONNECTIONS, WAYPOINTS ----------------
+  let markers = [];
+  let connections = [];
+  let waypoints = [];
+  let selectedMarker = null;
+  let currentClickedMarker = null;
+
+  function drawConnectionsFromMarkers() {
+    // clear old lines
+    connections.forEach(c => map.removeLayer(c.line));
+    connections = [];
+
+    markers.forEach(m => {
+      if (!m.connections) return;
+
+      const targets = m.connections
+        .toString()
+        .split(",")
+        .map(x => parseInt(x.trim()))
+        .filter(x => !isNaN(x));
+
+      // decide color based on waypoint state
+      const lineColor = (m.in_waypoints === true || m.in_waypoints === "True")
+        ? "green"
+        : "red";
+
+      targets.forEach(tid => {
+        const target = markers.find(mm => mm.id === tid);
+        if (!target) return;
+
+        const line = L.polyline(
+          [
+            [m.lat, m.lon],
+            [target.lat, target.lon]
+          ],
+          { color: lineColor, weight: 3 }
         ).addTo(map);
 
-        markers.push({ marker: marker, label: m.label });
-      });
-    }
-
-    function clearMarkers() {
-      console.log("Clearing markers");
-      markers.forEach(m => map.removeLayer(m.marker));
-      markers = [];
-    }
-
-    /* ===============================
-       🔍 ZOOM HANDLER
-    =============================== */
-
-    map.on('zoomend', function() {
-      var zoom = map.getZoom();
-      console.log(`Zoom: ${zoom}, maintaining yaw: ${currentYaw}°`);
-
-      // Update rover icon with current angle
-      roverMarker.setIcon(createRoverIcon(zoom, currentYaw));
-
-      // Update other markers
-      markers.forEach(m => {
-        m.marker.setIcon(createIcon(m.label, zoom));
+        connections.push({
+          from: m.id,
+          to: tid,
+          line: line
+        });
       });
     });
+  }
 
-    /* ===============================
-       🌍 EXPOSE TO QT
-    =============================== */
-    window.updateRoverPosition = updateRoverPosition;
-    window.updateRoverYaw = updateRoverYaw;
-    window.addMarkers = addMarkers;
-    window.clearMarkers = clearMarkers;
-    window.map = map;
-    
-    console.log("✓ Map ready, functions exposed");
+    function addMarkers(markerList) {
+    markerList.forEach(m => {
+        const marker = L.marker(
+        [m.lat, m.lon],
+        { icon: createIcon(m.label, map.getZoom()) }
+        ).addTo(map);
 
-  </script>
+        marker.on("click", event => showMarkerMenu(m, event));
+
+        marker.on("contextmenu", e => {
+        if (backend) {
+            backend.receiveFromJS(
+            "markerRightClick",
+            JSON.stringify({ id: m.id, lat: m.lat, lon: m.lon })
+            );
+        }
+        });
+
+        // 🔥 store EVERYTHING from CSV + leaflet marker
+        markers.push({
+        ...m,          // id, lat, lon, label, connections, in_waypoints, yaw
+        marker: marker
+        });
+    });
+    }
+
+
+    function clearMarkers() {
+      // remove marker layers
+      markers.forEach(m => {
+        map.removeLayer(m.marker);
+      });
+
+      // remove connection lines
+      connections.forEach(c => {
+        map.removeLayer(c.line);
+      });
+
+      markers = [];
+      connections = [];
+    }
+
+
+  // ---------------- MAP ZOOM ----------------
+  map.on('zoomend', () => {
+    const zoom = map.getZoom();
+    roverMarker.setIcon(createRoverIcon(zoom, currentYaw));
+    markers.forEach(m => m.marker.setIcon(createIcon(m.label, zoom)));
+  });
+
+  // ---------------- MARKER MENU ----------------
+  const markerMenu = document.getElementById("markerMenu");
+  const globalMenu = document.getElementById("globalMenu");
+
+  map.on("click", () => {
+    markerMenu.style.display = "none";
+    globalMenu.style.display = "none";
+  });
+
+  function showMarkerMenu(marker, event) {
+    currentClickedMarker = marker;
+    markerMenu.style.left = event.originalEvent.pageX + "px";
+    markerMenu.style.top = event.originalEvent.pageY + "px";
+    markerMenu.style.display = "block";
+
+    // Rename Save/Delete waypoint
+    const saveBtn = document.getElementById("saveWaypoint");
+    saveBtn.textContent = waypoints.includes(marker.id) ? "Remove from Waypoints List" : "Add to Waypoints List";
+
+    const connectWith = document.getElementById("connectWithSelected");
+    connectWith.style.display = (selectedMarker && selectedMarker !== marker) ? "block" : "none";
+
+    const disconnect = document.getElementById("disconnectMarker");
+    disconnect.style.display = connections.some(c => c.from === marker.id || c.to === marker.id) ? "block" : "none";
+  }
+
+  document.getElementById("saveWaypoint").onclick = () => {
+    const id = currentClickedMarker.id;
+    if (waypoints.includes(id)) {
+      waypoints = waypoints.filter(w => w !== id);
+      if (backend) backend.receiveFromJS("waypointRemoved", JSON.stringify({id, waypoints: [...waypoints]}));
+    } else {
+      waypoints.push(id);
+      if (backend) backend.receiveFromJS("waypointAdded", JSON.stringify({id, waypoints: [...waypoints]}));
+    }
+    markerMenu.style.display = "none";
+  };
+
+  document.getElementById("connectMarker").onclick = () => {
+    selectedMarker = currentClickedMarker;
+    if (backend) backend.receiveFromJS("markerSelected", JSON.stringify({id: selectedMarker.id}));
+    markerMenu.style.display = "none";
+  };
+
+  document.getElementById("connectWithSelected").onclick = () => {
+    const line = L.polyline([
+      [selectedMarker.lat, selectedMarker.lon],
+      [currentClickedMarker.lat, currentClickedMarker.lon]
+    ], { color: 'red', weight: 3 }).addTo(map);
+
+    connections.push({ line, from: selectedMarker.id, to: currentClickedMarker.id });
+    if (backend) backend.receiveFromJS("markersConnected", JSON.stringify({
+        from: selectedMarker.id,
+        to: currentClickedMarker.id,
+        fromLat: selectedMarker.lat,
+        fromLon: selectedMarker.lon,
+        toLat: currentClickedMarker.lat,
+        toLon: currentClickedMarker.lon
+    }));
+    selectedMarker = null;
+    markerMenu.style.display = "none";
+  };
+
+  document.getElementById("disconnectMarker").onclick = () => {
+    const removed = [];
+    connections = connections.filter(c => {
+      if (c.from === currentClickedMarker.id || c.to === currentClickedMarker.id) {
+        map.removeLayer(c.line);
+        removed.push({from: c.from, to: c.to});
+        return false;
+      }
+      return true;
+    });
+    if (backend) backend.receiveFromJS("markerDisconnected", JSON.stringify({markerId: currentClickedMarker.id, disconnected: removed}));
+    markerMenu.style.display = "none";
+  };
+
+  document.getElementById("followRoverBtn").onclick = () => {
+  enableFollowRover();
+  };
+
+  map.on("mousedown wheel touchstart", () => {
+  disableFollowRover();
+  });
+
+  // ---------------- GLOBAL MENU ----------------
+  map.on("contextmenu", e => {
+    globalMenu.style.left = e.originalEvent.pageX + "px";
+    globalMenu.style.top = e.originalEvent.pageY + "px";
+    globalMenu.style.display = "block";
+    globalMenu.dataset.lat = e.latlng.lat;
+    globalMenu.dataset.lon = e.latlng.lng;
+    if (backend) backend.receiveFromJS("mapRightClick", JSON.stringify({lat: e.latlng.lat, lon: e.latlng.lng}));
+  });
+
+  document.getElementById("resetWaypoints").onclick = () => {
+    waypoints = [];
+    if (backend) backend.receiveFromJS("waypointsReset", JSON.stringify({}));
+    globalMenu.style.display = "none";
+  };
+
+  document.getElementById("disconnectAll").onclick = () => {
+    connections.forEach(c => map.removeLayer(c.line));
+    connections = [];
+    if (backend) backend.receiveFromJS("allConnectionsRemoved", JSON.stringify({}));
+    globalMenu.style.display = "none";
+  };
+
+  // Rename New Waypoint Here → Add a Marker Here
+  document.getElementById("newWaypointHere").textContent = "Add a Marker Here";
+  document.getElementById("newWaypointHere").onclick = () => {
+    const lat = parseFloat(globalMenu.dataset.lat);
+    const lon = parseFloat(globalMenu.dataset.lon);
+    const newId = markers.length ? Math.max(...markers.map(m => m.id)) + 1 : 1;
+    const newMarker = { id: newId, lat, lon, label: "waypoint" };
+    addMarkers([newMarker]);
+    // Do NOT push to waypoints list automatically
+    if (backend) backend.receiveFromJS("newMarkerAdded", JSON.stringify({id: newId, lat, lon}));
+    globalMenu.style.display = "none";
+  };
+
+  // ---------------- EXPOSE TO QT ----------------
+  window.updateRoverPosition = updateRoverPosition;
+  window.updateRoverYaw = updateRoverYaw;
+  window.addMarkers = addMarkers;
+  window.clearMarkers = clearMarkers;
+
+</script>
 </body>
 </html>

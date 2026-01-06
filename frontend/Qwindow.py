@@ -10,7 +10,7 @@ import math
 from PySide6.QtCore import QUrl
 from PySide6.QtWebChannel import QWebChannel
 from components.csvFileComponent import csvFileComponent
-from backend.csv_logger import CSVLogger
+from backend.csv_manager import CSVLogger
 from backend.qwebchannel import MapBackend
 from pathlib import Path
 import os
@@ -19,6 +19,7 @@ import os
 class MainWindow(QMainWindow):
     kill_signal = Signal(bool)
     colour_signal = Signal(str)
+    autolog_signal = Signal(bool)
 
     def __init__(self):
         super().__init__()
@@ -35,17 +36,10 @@ class MainWindow(QMainWindow):
         "orange": self.ui.orangeButton,
         "purple": self.ui.purpleButton
         }
-
-    # Connect all buttons to handler with their name
+        self.ui.autologButton.toggled.connect(self.autologbtn_toggled)
         for name, btn in self.colour_buttons.items():
             btn.clicked.connect(lambda checked, n=name: self.colour_button_clicked(n))
 
-        # build absolute path relative to this file
-        map_path = Path(__file__).parent.parent / "offline_map/map.html"
-        #self.ui.webEngineView.load(QUrl("http://localhost:8000/map.html"))
-        print("Loading map from:", map_path)
-        print("Exists?", os.path.exists(map_path))
-        
         # CSV viewer
         self.csv_file_path = "waypoints.csv"
         self.waypoint_log_file_path = "push_into_ananth.csv"
@@ -54,15 +48,17 @@ class MainWindow(QMainWindow):
         header = self.ui.csvFile.horizontalHeader()
         header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
 
-        # Load Leaflet map
+        # Map
+        map_path = Path(__file__).parent.parent / "offline_map/map.html"
+        print("Loading map from:", map_path)
+        print("Exists?", os.path.exists(map_path))
+        
         self.map_backend = MapBackend(csv_path=self.csv_file_path, waypoint_log_csv=self.waypoint_log_file_path)
         self.channel = QWebChannel()
         self.channel.registerObject("mapBackend", self.map_backend)
         self.ui.webEngineView.page().setWebChannel(self.channel)
-
         self.ui.webEngineView.load(QUrl.fromLocalFile(str(map_path)))
         self.ui.webEngineView.loadFinished.connect(self.on_map_loaded)
-
 
         self.current_yaw = 0.0 
 
@@ -84,8 +80,6 @@ class MainWindow(QMainWindow):
         except Exception as e:
             print("Error loading waypoints:", e)
 
-
-
     def update_gps(self, latitude, longitude):
         self.ui.GPSValuesLabel.setText(f"{latitude:.6f}, {longitude:.6f}")
         
@@ -97,20 +91,9 @@ class MainWindow(QMainWindow):
         js = f"updateRoverYaw({yaw});"
         self.ui.webEngineView.page().runJavaScript(js)
 
-
     def update_odom(self, x, y, yaw):
         self.current_yaw = yaw
         self.ui.OdomValueLabel.setText(f"{x:.2f} {y:.2f} {yaw:.2f}")
-        
-        # yaw_deg = math.degrees(yaw)
-        # yaw_deg -= 90  # adjust if needed
-        
-        # js = f"updateRoverYaw({yaw_deg});"
-        # self.ui.webEngineView.page().runJavaScript(js)
-
-    def update_battery(self, battery):
-        # self.ui.batteryValueLabel.setText(f"{battery:.2f}%")
-        pass
 
     def update_mode(self, mode):
         self.ui.ModeValueLabel.setText(f"{mode}")
@@ -148,3 +131,10 @@ class MainWindow(QMainWindow):
         #depending on button
         print(f"COLOUR OVERRIDE INITIATED: {colour_name}")
         self.colour_signal.emit(colour_name)
+
+    def autologbtn_toggled(self, checked):
+        self.autolog_signal.emit(checked)
+        if checked: 
+            self.ui.autologButton.setText("AUTOLOG ON")
+        else:
+            self.ui.autologButton.setText("AUTOLOG OFF")

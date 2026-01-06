@@ -1,8 +1,11 @@
 from PySide6.QtCore import QObject, Slot
 import json
 
-from backend.csv_logger import CSVLogger, WaypointLogCSV
+from backend.csv_manager import CSVLogger, WaypointLogCSV
 
+'''
+this class is the bridge between js map and python backend, every function in js ends up coming here which is redirected to csv manager
+'''
 
 class MapBackend(QObject):
     def __init__(self, csv_path: str, waypoint_log_csv: str):
@@ -92,7 +95,6 @@ class MapBackend(QObject):
         """Called when the HTML page is fully loaded"""
         print("Map page is ready!")
 
-        # Optional: dump CSV state on load
         markers = self.csv.get_all_markers()
         print(f"Loaded {len(markers)} markers from CSV")
 

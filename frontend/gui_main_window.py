@@ -27,7 +27,7 @@ class Ui_guiMainWindow(object):
     def setupUi(self, guiMainWindow):
         if not guiMainWindow.objectName():
             guiMainWindow.setObjectName(u"guiMainWindow")
-        guiMainWindow.resize(1325, 883)
+        guiMainWindow.resize(1325, 913)
         guiMainWindow.setStyleSheet(u"background-color: rgb(24, 24, 29);")
         self.centralwidget = QWidget(guiMainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
@@ -835,6 +835,26 @@ class Ui_guiMainWindow(object):
 "    background-color: #45a049;\n"
 "}\n"
 "")
+        self.autologButton = QPushButton(self.centralwidget)
+        self.autologButton.setObjectName(u"autologButton")
+        self.autologButton.setGeometry(QRect(20, 870, 131, 21))
+        self.autologButton.setStyleSheet(u"QPushButton {\n"
+"	background-color: rgb(227, 30, 3);\n"
+"    color:  rgb(24, 24, 29);\n"
+"    border-radius: 8px;\n"
+"    font-weight: bold;\n"
+"    border: 3px solid rgb(119, 118, 123);\n"
+"}\n"
+"\n"
+"QPushButton:checked {\n"
+"    background-color:  rgb(24, 24, 29);\n"
+"    color: rgb(227, 30, 3);\n"
+"\n"
+"}\n"
+"\n"
+"")
+        self.autologButton.setCheckable(True)
+        self.autologButton.setChecked(False)
         guiMainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QStatusBar(guiMainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -893,5 +913,6 @@ class Ui_guiMainWindow(object):
         self.OdomNameLabel.setText(QCoreApplication.translate("guiMainWindow", u"Odom", None))
         self.OdomValueLabel.setText(QCoreApplication.translate("guiMainWindow", u"-", None))
         self.KillSwitchButton.setText(QCoreApplication.translate("guiMainWindow", u"Kill", None))
+        self.autologButton.setText(QCoreApplication.translate("guiMainWindow", u"AUTOLOG", None))
     # retranslateUi
 

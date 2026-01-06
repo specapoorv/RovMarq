@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1325</width>
-    <height>883</height>
+    <height>913</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -1331,24 +1331,40 @@ QWidget {
       <y>460</y>
       <width>299</width>
       <height>29</height>
+   <widget class="QPushButton" name="autologButton">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>870</y>
+      <width>131</width>
+      <height>21</height>
      </rect>
     </property>
     <property name="styleSheet">
      <string notr="true">QPushButton {
-    background-color: rgb(246, 11, 11);
-    color: white;
+	background-color: rgb(227, 30, 3);
+    color:  rgb(24, 24, 29);
     border-radius: 8px;
-    padding: 6px 12px;
     font-weight: bold;
+    border: 3px solid rgb(119, 118, 123);
 }
 
-QPushButton:hover {
-    background-color: #45a049;
+QPushButton:checked {
+    background-color:  rgb(24, 24, 29);
+    color: rgb(227, 30, 3);
+
 }
+
 </string>
     </property>
     <property name="text">
-     <string>Kill</string>
+     <string>AUTOLOG</string>
+    </property>
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+    <property name="checked">
+     <bool>false</bool>
     </property>
    </widget>
   </widget>

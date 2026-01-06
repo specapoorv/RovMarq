@@ -155,7 +155,7 @@
   }
 
   function createRoverIcon(zoom, angleDeg) {
-    var baseSize = 48;
+    var baseSize = 64;
     var scale = Math.max(0.6, Math.min(zoom / 15, 1.4));
     var size = baseSize * scale;
     var iconUrl = getRoverImageForAngle(angleDeg);
@@ -175,10 +175,12 @@
     const fontSize = 10 * scale;
     const iconUrl = iconImages[label] || iconImages["default"];
 
+    const showLabel = label !== "waypoint";
+
     const html = `
       <div class="marker-container">
         <img src="${iconUrl}" style="width:${size}px; height:${size}px;" />
-        <div class="marker-label" style="font-size:${fontSize}px;">${label}</div>
+        ${showLabel ? `<div class="marker-label" style="font-size:${fontSize}px;">${label}</div>` : ``}
       </div>
     `;
 
@@ -231,9 +233,11 @@
         .filter(x => !isNaN(x));
 
       // decide color based on waypoint state
-      const lineColor = (m.in_waypoints === true || m.in_waypoints === "True")
-        ? "green"
-        : "red";
+      const lineColor =
+        (m.in_waypoints === true || m.in_waypoints === "True")
+          ? "#3CFF00"   // Minecraft XP green
+          : "#B6FF00";  // Minecraft XP yellow
+
 
       targets.forEach(tid => {
         const target = markers.find(mm => mm.id === tid);
@@ -274,7 +278,6 @@
         }
         });
 
-        // 🔥 store EVERYTHING from CSV + leaflet marker
         markers.push({
         ...m,          // id, lat, lon, label, connections, in_waypoints, yaw
         marker: marker

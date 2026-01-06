@@ -34,7 +34,6 @@ def main():
     bridge.gps_updated.connect(window.update_gps)
     bridge.yaw_updated.connect(window.update_yaw)
     bridge.odom_updated.connect(window.update_odom)
-    bridge.battery_updated.connect(window.update_battery)
     # bridge.latency_updated.connect(window.update_latency)
     bridge.steering_angles.connect(window.ui.roverwheelwidget.set_wheel_angles)
     bridge.mode_updated.connect(window.update_mode)
@@ -49,6 +48,7 @@ def main():
 
     window.kill_signal.connect(bridge.kill_handler) #for kill switch
     window.colour_signal.connect(bridge.colour_override_handler)
+    window.autolog_signal.connect(bridge.autolog_handler)
   
         # --- Periodic waypoint refresh ---
     refresh_timer = QTimer()

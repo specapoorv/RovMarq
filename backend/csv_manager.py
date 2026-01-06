@@ -10,9 +10,6 @@ class CSVLogger:
         if not os.path.exists(self.csv_path):
             self._write([])
 
-    # ===============================
-    # INTERNAL HELPERS
-    # ===============================
     def _read(self):
         with open(self.csv_path, "r", newline="") as f:
             reader = csv.DictReader(f)
@@ -29,11 +26,7 @@ class CSVLogger:
 
         os.replace(tmp_path, self.csv_path)  # atomic on Linux
 
-
-    # ===============================
-    # MARKER / WAYPOINT OPERATIONS
-    # ===============================
-    def add_marker(self, lat: float, lon: float, label: str = "waypoint", yaw: Optional[float] = None) -> int:
+    def add_marker(self, lat: float, lon: float, label: str = "waypoint", yaw = None) -> int:
         """Add a new marker (not automatically a waypoint)"""
         rows = self._read()
         new_id = max([int(r["id"]) for r in rows], default=-1) + 1
@@ -45,7 +38,7 @@ class CSVLogger:
             "label": label,
             "connections": "",
             "in_waypoints": "False",
-            "yaw": yaw if yaw is not None else ""
+            "yaw": yaw if yaw is not None else "0.0"
         }
         rows.append(row)
         self._write(rows)
@@ -67,9 +60,6 @@ class CSVLogger:
                 row["label"] = "waypoint"
         self._write(rows)
 
-    # ===============================
-    # CONNECTIONS
-    # ===============================
     def add_connection(self, from_id: int, to_id: int):
         rows = self._read()
         updated = False
@@ -121,9 +111,7 @@ class CSVLogger:
             row["connections"] = ""
         self._write(rows)
 
-    # ===============================
-    # GETTERS
-    # ===============================
+
     def get_all_markers(self) -> List[Dict]:
         rows = self._read()
         # Convert proper types

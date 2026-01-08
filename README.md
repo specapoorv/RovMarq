@@ -16,6 +16,12 @@ RovMarq is a PySide6-based GUI application designed to coordinate and control sy
    cd RovMarq
    ```
 
+3. Install the requirements.txt:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+
 ---
 
 ## Running the Application
@@ -78,11 +84,5 @@ Most development and modifications will typically be made in the following files
 - `main_coordinator.py` – Application entry point and controller logic  
 - `QMainWindow.py` – Main window logic and UI bindings  
 
-Try to keep UI logic separated from backend logic to maintain clarity and scalability.
 
 ---
-
-## Notes
-
-- Ensure PySide6 is properly installed before running the application.
-- Use `ui_test.py` frequently during UI development to avoid unnecessary backend dependencies.

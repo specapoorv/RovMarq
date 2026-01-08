@@ -10,7 +10,6 @@ from geometry_msgs.msg import PoseArray
 import numpy as np
 if not hasattr(np, 'float'):
     np.float = float
-
 from tf_transformations import euler_from_quaternion
 from frontend.Qwindow import MainWindow
 from std_msgs.msg import Int32MultiArray
@@ -93,9 +92,9 @@ class ROSQtBridge(Node, QObject):
             reliability=ReliabilityPolicy.RELIABLE
         )
 
-        self.create_subscription(NavSatFix, "/mobile_sensor/gps", self.gps_callback, 10)
+        self.create_subscription(NavSatFix, "/gps_fix", self.gps_callback, 10)
         self.create_subscription(Float64, "/global_north", self.yaw_callback, 10)
-        self.create_subscription(Odometry, "/px4_odom", self.odom_callback, self.best_effort)
+        self.create_subscription(Odometry, "/zed/zed_node/odom", self.odom_callback, self.best_effort)
         self.create_subscription(Float32, "/battery_topic", self.battery_callback, 10)
         self.create_subscription(Float32MultiArray, "/enc_auto", self.steering_callback, self.reliable)
         self.create_subscription(Int8, "/mode", self.mode_callback, self.reliable)
@@ -169,9 +168,9 @@ class ROSQtBridge(Node, QObject):
             self.motor_publisher.publish(pwm_msg)
 
     def colour_override_handler(self, colour_name):
-        subprocess.run(['sshpass -p "anveshak" ssh orin@10.42.0.253', "echo 'hello'", f"ros2 param set /yolo_publisher colour_override {colour_name}", "exit"], shell=True)
+        # subprocess.run(['sshpass -p "anveshak" ssh orin@10.42.0.253', "echo 'hello'", f"ros2 param set /yolo_publisher colour_override {colour_name}", "exit"], shell=True)
         subprocess.run(f"ros2 param set /yolo_publisher colour_override {colour_name}", shell=True)
-        subprocess.run("exit", shell=True)
+        # subprocess.run("exit", shell=True)
 
     def steering_callback(self, msg):
         data = msg.data
@@ -190,16 +189,19 @@ class ROSQtBridge(Node, QObject):
         if not self.autolog_flag:
             print("STOPPED LOGGING, too much cock you are showing ah")
             return
-        
-        if self.gps_timestamp or self.vel_timestamp is None:
-            return
-        
-        if (time.time() - self.gps_timestamp) or (time.time() - self.vel_timestamp) > 1.0:
-            self.latest_gps = None
-            self.vel = None
+        else:
+            print("autologgin on")
 
-        if self.latest_gps or self.vel is None:
-            return
+        
+        # if self.gps_timestamp or self.vel_timestamp is None:
+        #     return
+        
+        # if (time.time() - self.gps_timestamp) or (time.time() - self.vel_timestamp) > 1.0:
+        #     self.latest_gps = None
+        #     self.vel = None
+
+        # if self.latest_gps or self.vel is None:
+        #     return
         
         lat, lon = self.latest_gps
 

@@ -9,10 +9,8 @@ from frontend.Qwindow import MainWindow            # Ui logic
 from backend.bridge import ROSQtBridge             #ROSQt bridge
 from PySide6.QtCore import QTimer
 
-
 # from backend.async_db_writer import InfluxDBWriter   #Async DB writer
 # from backend.fetchers.gps import gpsFetcher
-
 
 
 def main():

@@ -5,7 +5,6 @@ from geometry_msgs.msg import PoseArray
 from std_msgs.msg import Float32, Int8, String, Float64
 from nav_msgs.msg import Odometry
 from rclpy.qos import QoSProfile, ReliabilityPolicy
-from geometry_msgs.msg import PoseArray
 """ monkey patching numpy here in newer versions np.float is deprecated """
 import numpy as np
 if not hasattr(np, 'float'):
@@ -22,7 +21,15 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import time
 from backend.csv_manager import CSVLogger
+from backend.term import SSHSession
 
+ssh = SSHSession(
+    host="10.42.66.117",
+    user="adeesh",
+    password="anveshak",
+)
+
+time.sleep(3)
 
 class CSVHandler(FileSystemEventHandler):
     def __init__(self, signal, csv_path):
@@ -44,6 +51,9 @@ class ROSQtBridge(Node, QObject):
     kill_signal = Signal(bool)
     colour_signal = Signal(str)
     autolog_signal = Signal(bool)
+    brightness_signal = Signal(int, int)  # cam_id, value
+    contrast_signal   = Signal(int, int)
+    zoom_signal       = Signal(int, int)
     '''
     bridge just pushes the signals from ros to Qt
     no processing, no blocking
@@ -125,6 +135,7 @@ class ROSQtBridge(Node, QObject):
 
     def yaw_callback(self, msg):
         yaw = msg.data
+        yaw = yaw - 180
         print("updating yaw")
         self.yaw_updated.emit(yaw)
 
@@ -169,8 +180,36 @@ class ROSQtBridge(Node, QObject):
 
     def colour_override_handler(self, colour_name):
         # subprocess.run(['sshpass -p "anveshak" ssh orin@10.42.0.253', "echo 'hello'", f"ros2 param set /yolo_publisher colour_override {colour_name}", "exit"], shell=True)
-        subprocess.run(f"ros2 param set /yolo_publisher colour_override {colour_name}", shell=True)
+        print(f"[BACKEND] setting parameter {colour_name}")
+        ssh.run('echo hello')
+        ssh.run('ros2 topic list')
+        time.sleep(2)
+        #subprocess.run(f'ros2 param set /yolo_publisher colour_override {colour_name}')
         # subprocess.run("exit", shell=True)
+    
+    def cam_setting_handler(self, cam_index, type, value):
+        device_id = cam_index - 1
+        device = f"/dev/video{device_id}"
+
+        if type == "brightness":
+            ctrl = "brightness"
+        elif type == "contrast":
+            ctrl = "contrast"
+        elif type == "zoom":
+            ctrl = "zoom_absolute"
+        else:
+            print(f"Unknown camera setting type: {type}")
+            return
+
+        cmd = f"v4l2-ctl -d {device} -c {ctrl}={value}"
+        print(f"[CAM {cam_index}] {cmd}")
+
+        try:
+            ssh.run(cmd)
+        except Exception as e:
+            print(f"Failed to run camera command: {e}")
+
+        
 
     def steering_callback(self, msg):
         data = msg.data

@@ -21,6 +21,10 @@ class MainWindow(QMainWindow):
     colour_signal = Signal(str)
     autolog_signal = Signal(bool)
 
+    brightness_signal = Signal(int, int)  # cam_id, value
+    contrast_signal   = Signal(int, int)
+    zoom_signal       = Signal(int, int)
+
     def __init__(self):
         super().__init__()
         self.ui = Ui_guiMainWindow()
@@ -29,16 +33,34 @@ class MainWindow(QMainWindow):
         # Buttons
         self.ui.KillSwitchButton.clicked.connect(self.kill_switch_clicked)
         self.colour_buttons = {
-        "red": self.ui.redButton,
-        "green": self.ui.greenButton,
-        "blue": self.ui.blueButton,
-        "yellow": self.ui.yellowButton,
-        "orange": self.ui.orangeButton,
-        "purple": self.ui.purpleButton
+            "red": self.ui.redButton,
+            "green": self.ui.greenButton,
+            "blue": self.ui.blueButton,
+            "yellow": self.ui.yellowButton,
+            "orange": self.ui.orangeButton,
+            "purple": self.ui.purpleButton
         }
         self.ui.autologButton.toggled.connect(self.autologbtn_toggled)
         for name, btn in self.colour_buttons.items():
             btn.clicked.connect(lambda checked, n=name: self.colour_button_clicked(n))
+
+        # ===== BRIGHTNESS SLIDERS =====
+        self.ui.brightnessSlider1.valueChanged.connect(lambda v: self.on_brightness_changed(1, v))
+        self.ui.brightnessSlider2.valueChanged.connect(lambda v: self.on_brightness_changed(2, v))
+        self.ui.brightnessSlider3.valueChanged.connect(lambda v: self.on_brightness_changed(3, v))
+        self.ui.brightnessSlider4.valueChanged.connect(lambda v: self.on_brightness_changed(4, v))
+
+        # ===== CONTRAST SLIDERS =====
+        self.ui.contrastSlider1.valueChanged.connect(lambda v: self.on_contrast_changed(1, v))
+        self.ui.contrastSlider2.valueChanged.connect(lambda v: self.on_contrast_changed(2, v))
+        self.ui.contrastSlider3.valueChanged.connect(lambda v: self.on_contrast_changed(3, v))
+        self.ui.contrastSlider4.valueChanged.connect(lambda v: self.on_contrast_changed(4, v))
+
+        # ===== ZOOM SLIDERS =====
+        self.ui.zoomSlider1.valueChanged.connect(lambda v: self.on_zoom_changed(1, v))
+        self.ui.zoomSlider2.valueChanged.connect(lambda v: self.on_zoom_changed(2, v))
+        self.ui.zoomSlider3.valueChanged.connect(lambda v: self.on_zoom_changed(3, v))
+        self.ui.zoomSlider4.valueChanged.connect(lambda v: self.on_zoom_changed(4, v))
 
         # CSV viewer
         self.csv_file_path = "waypoints.csv"
@@ -115,9 +137,20 @@ class MainWindow(QMainWindow):
     def update_frequency(self, frequency):
         self.ui.frequencyValueLabel.setText(f"{frequency} GHz")
         
-
     def update_noise(self, noise):
         self.ui.noiseValueLabel.setText(f"{noise}")
+
+    def on_brightness_changed(self, cam_id, value):
+        print(f"Brightness cam {cam_id}: {value}")
+        self.brightness_signal.emit(cam_id, value)
+
+    def on_contrast_changed(self, cam_id, value):
+        print(f"Contrast cam {cam_id}: {value}")
+        self.contrast_signal.emit(cam_id, value)
+
+    def on_zoom_changed(self, cam_id, value):
+        print(f"Zoom cam {cam_id}: {value}")
+        self.zoom_signal.emit(cam_id, value)
 
     # ===============================
     # UI ACTIONS

@@ -8,9 +8,11 @@ from PySide6.QtCore import Qt
 from frontend.Qwindow import MainWindow            # Ui logic
 from backend.bridge import ROSQtBridge             #ROSQt bridge
 from PySide6.QtCore import QTimer
+from backend.term import SSHSession
 
 # from backend.async_db_writer import InfluxDBWriter   #Async DB writer
 # from backend.fetchers.gps import gpsFetcher
+
 
 
 def main():
@@ -47,6 +49,12 @@ def main():
     window.kill_signal.connect(bridge.kill_handler) #for kill switch
     window.colour_signal.connect(bridge.colour_override_handler)
     window.autolog_signal.connect(bridge.autolog_handler)
+    window.brightness_signal.connect(lambda cam, val: bridge.cam_setting_handler(cam, "brightness", val))
+    window.contrast_signal.connect(lambda cam, val: bridge.cam_setting_handler(cam, "contrast", val))
+    window.zoom_signal.connect(lambda cam, val: bridge.cam_setting_handler(cam, "zoom", val))
+
+
+
   
         # --- Periodic waypoint refresh ---
     refresh_timer = QTimer()

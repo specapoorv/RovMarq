@@ -20,7 +20,7 @@ class MainWindow(QMainWindow):
     kill_signal = Signal(bool)
     colour_signal = Signal(str)
     autolog_signal = Signal(bool)
-
+    send_signal = Signal(bool)
     brightness_signal = Signal(int, int)  # cam_id, value
     contrast_signal   = Signal(int, int)
     zoom_signal       = Signal(int, int)
@@ -32,6 +32,7 @@ class MainWindow(QMainWindow):
 
         # Buttons
         self.ui.KillSwitchButton.clicked.connect(self.kill_switch_clicked)
+        self.ui.sendButton.clicked.connect(self.send_button_clicked)
         self.colour_buttons = {
             "red": self.ui.redButton,
             "green": self.ui.greenButton,
@@ -120,8 +121,12 @@ class MainWindow(QMainWindow):
     def update_mode(self, mode):
         self.ui.ModeValueLabel.setText(f"{mode}")
 
-    def update_config(self, config):
+    def update_config(self, config: str):
         self.ui.ConfigValueLabel.setText(config)
+        if config == "DRIVE":
+            self.ui.directionLabel.setText("ARM FORWARD")
+        elif config == "AUTO":
+            self.ui.directionLabel.setText("ZED FORWARD")
 
     def update_twist(self, vel, omega):
         self.ui.VelocityValueLabel.setText(f"{vel:.2f}")
@@ -171,3 +176,7 @@ class MainWindow(QMainWindow):
             self.ui.autologButton.setText("AUTOLOG ON")
         else:
             self.ui.autologButton.setText("AUTOLOG OFF")
+
+    def send_button_clicked(self):
+        print("Sending the waypoints file to orin....")
+        self.send_signal.emit(True)

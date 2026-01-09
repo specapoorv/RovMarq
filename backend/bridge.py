@@ -8,12 +8,11 @@ from rclpy.qos import QoSProfile, ReliabilityPolicy
 """ monkey patching numpy here in newer versions np.float is deprecated """
 import numpy as np
 if not hasattr(np, 'float'):
-    np.float = float
+    np.float = float    
 from tf_transformations import euler_from_quaternion
 from frontend.Qwindow import MainWindow
 from std_msgs.msg import Int32MultiArray
 from std_msgs.msg import Float32MultiArray
-from std_srvs.srv import Trigger
 import subprocess
 import csv
 import os
@@ -54,6 +53,7 @@ class ROSQtBridge(Node, QObject):
     brightness_signal = Signal(int, int)  # cam_id, value
     contrast_signal   = Signal(int, int)
     zoom_signal       = Signal(int, int)
+    send_signal = Signal(bool)
     '''
     bridge just pushes the signals from ros to Qt
     no processing, no blocking
@@ -111,7 +111,6 @@ class ROSQtBridge(Node, QObject):
         self.create_subscription(String, "/config", self.config_callback, self.reliable)
         self.create_subscription(Float32MultiArray, "/vel", self.vel_callback, self.reliable)
         self.create_subscription(Float32MultiArray, "/mikrotik_info", self.mikrotik_info_callback, 10)
-
         self.motor_publisher = self.create_publisher(Int32MultiArray, "/motor_pwm", 10)
 
         self.autolog_timer = self.create_timer(5.0, self.autolog_waypoint)
@@ -178,6 +177,12 @@ class ROSQtBridge(Node, QObject):
             pwm_msg.data = [0, 0, 0, 0, 0, 0, 0, 0]
             self.motor_publisher.publish(pwm_msg)
 
+    
+    def send_handler(self, sent: bool):
+        if sent:
+            pass
+        # Add the functionality here i guess or change
+
     def colour_override_handler(self, colour_name):
         # subprocess.run(['sshpass -p "anveshak" ssh orin@10.42.0.253', "echo 'hello'", f"ros2 param set /yolo_publisher colour_override {colour_name}", "exit"], shell=True)
         print(f"[BACKEND] setting parameter {colour_name}")
@@ -241,6 +246,8 @@ class ROSQtBridge(Node, QObject):
 
         # if self.latest_gps or self.vel is None:
         #     return
+        if self.latest_gps is None:
+            return
         
         lat, lon = self.latest_gps
 

@@ -45,24 +45,19 @@ def main():
     bridge.frequency_updated.connect(window.update_frequency)
     bridge.noise_updated.connect(window.update_noise)
 
-
+    window.send_signal.connect(bridge.send_handler)
     window.kill_signal.connect(bridge.kill_handler) #for kill switch
     window.colour_signal.connect(bridge.colour_override_handler)
     window.autolog_signal.connect(bridge.autolog_handler)
     window.brightness_signal.connect(lambda cam, val: bridge.cam_setting_handler(cam, "brightness", val))
     window.contrast_signal.connect(lambda cam, val: bridge.cam_setting_handler(cam, "contrast", val))
     window.zoom_signal.connect(lambda cam, val: bridge.cam_setting_handler(cam, "zoom", val))
-
-
-
   
         # --- Periodic waypoint refresh ---
     refresh_timer = QTimer()
     refresh_timer.setInterval(1000)  # ms (adjust if needed)
     refresh_timer.timeout.connect(window.load_waypoints)
     refresh_timer.start()
-
-    
 
     # #async writing 
     # bridge.gps_updated.connect(lambda lat, lon: influx_writer.enqueue({

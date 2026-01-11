@@ -23,9 +23,9 @@ from backend.csv_manager import CSVLogger
 from backend.term import SSHSession
 
 ssh = SSHSession(
-    host="10.42.66.117",
-    user="adeesh",
-    password="anveshak",
+    host="10.42.0.51",
+    user="nvidia",
+    password="nvidia",
 )
 
 time.sleep(3)
@@ -102,7 +102,7 @@ class ROSQtBridge(Node, QObject):
             reliability=ReliabilityPolicy.RELIABLE
         )
 
-        self.create_subscription(NavSatFix, "/gps_fix", self.gps_callback, 10)
+        self.create_subscription(NavSatFix, "/mobile_sensor/gps", self.gps_callback, 10)
         self.create_subscription(Float64, "/global_north", self.yaw_callback, 10)
         self.create_subscription(Odometry, "/zed/zed_node/odom", self.odom_callback, self.best_effort)
         self.create_subscription(Float32, "/battery_topic", self.battery_callback, 10)
@@ -186,10 +186,10 @@ class ROSQtBridge(Node, QObject):
     def colour_override_handler(self, colour_name):
         # subprocess.run(['sshpass -p "anveshak" ssh orin@10.42.0.253', "echo 'hello'", f"ros2 param set /yolo_publisher colour_override {colour_name}", "exit"], shell=True)
         print(f"[BACKEND] setting parameter {colour_name}")
-        ssh.run('echo hello')
-        ssh.run('ros2 topic list')
-        time.sleep(2)
-        #subprocess.run(f'ros2 param set /yolo_publisher colour_override {colour_name}')
+        # ssh.run('echo hello')
+        # ssh.run('ros2 topic list')
+        # time.sleep(2)
+        subprocess.run(f'ros2 param set /yolo_publisher colour_override {colour_name}')
         # subprocess.run("exit", shell=True)
     
     def cam_setting_handler(self, cam_index, type, value):

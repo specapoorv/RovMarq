@@ -9,11 +9,58 @@ from frontend.Qwindow import MainWindow            # Ui logic
 from backend.bridge import ROSQtBridge             #ROSQt bridge
 from PySide6.QtCore import QTimer
 from backend.term import SSHSession
+import subprocess
+import os
 
 # from backend.async_db_writer import InfluxDBWriter   #Async DB writer
 # from backend.fetchers.gps import gpsFetcher
 
+def launch_ffplay0_and_arrange():
+    # 1️⃣ Launch the alias from bash/zsh
+    #Assuming 'view_cam_orin' is available in your shell
+    print("launching ffplay")
+    proc = subprocess.Popen(
+        ["bash", "-ic", "view_cam_xavier", "0", "5000"],  # '-i' for interactive so alias works
+    )
+    # proc = subprocess.Popen(
+    #     ["ffplay", "-fflags", "nobuffer", "-flags", "low_delay", "/dev/video0", "-window_title", "XCAM1"]
+    # )
+     
+    time.sleep(2)  # tweak if needed
+    print("finding window")
+    wid_list = os.popen('xdotool search --name "udp://10.42.0.51:5000"').read().split()
+    if not wid_list:
+        print("FFPLAY window not found!")
+        return
+    wid = wid_list[0]
+    print(f"FFPLAY window id: {wid}")
 
+    i3_command = f'[id={wid}] move container to workspace 2, floating enable, resize set 550 300, move position 650 600'
+    subprocess.run(["i3-msg", i3_command])
+
+def launch_ffplay2_and_arrange():
+    # 1️⃣ Launch the alias from bash/zsh
+    #Assuming 'view_cam_orin' is available in your shell
+    print("launching ffplay")
+    proc = subprocess.Popen(
+        ["bash", "-ic", "view_cam_xavier", "2", "5001"],  # '-i' for interactive so alias works
+    )
+    # proc = subprocess.Popen(
+    #     ["ffplay", "-fflags", "nobuffer", "-flags", "low_delay", "/dev/video0", "-window_title", "XCAM1"]
+    # )
+     
+
+    time.sleep(2)  # tweak if needed
+
+    wid_list = os.popen('xdotool search --name "XCAM1"').read().split()
+    if not wid_list:
+        print("FFPLAY window not found!")
+        return
+    wid = wid_list[0]
+    print(f"FFPLAY window id: {wid}")
+
+    i3_command = f'[id={wid}] move container to workspace 2, floating enable, resize set 550 300, move position 650 600'
+    subprocess.run(["i3-msg", i3_command])
 
 def main():
     rclpy.init()
@@ -53,6 +100,7 @@ def main():
     window.contrast_signal.connect(lambda cam, val: bridge.cam_setting_handler(cam, "contrast", val))
     window.zoom_signal.connect(lambda cam, val: bridge.cam_setting_handler(cam, "zoom", val))
   
+
         # --- Periodic waypoint refresh ---
     refresh_timer = QTimer()
     refresh_timer.setInterval(1000)  # ms (adjust if needed)
@@ -107,4 +155,6 @@ def main():
 
 
 if __name__ == "__main__":
+    #launch_ffplay0_and_arrange()
+    #launch_ffplay2_and_arrange()
     main()

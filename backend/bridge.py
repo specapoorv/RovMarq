@@ -14,8 +14,6 @@ from frontend.Qwindow import MainWindow
 from std_msgs.msg import Int32MultiArray
 from std_msgs.msg import Float32MultiArray
 import subprocess
-import csv
-import os
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import time
@@ -30,34 +28,7 @@ ssh = SSHSession(
     user="nvidia",
     password="nvidia",
 )
-
 time.sleep(3)
-
-
-def toast_success(self, message, title="Success", duration=3000):
-    self.toast_signal.emit(
-        message,
-        title,
-        duration,
-        ToastPreset.SUCCESS_DARK
-    )
-
-def toast_error(self, message, title="Error", duration=3000):
-    self.toast_signal.emit(
-        message,
-        title,
-        duration,
-        ToastPreset.ERROR_DARK
-    )
-
-def toast_info(self, message, title="Info", duration=2500):
-    self.toast_signal.emit(
-        message,
-        title,
-        duration,
-        ToastPreset.INFO_DARK
-    )
-
 
 class CSVHandler(FileSystemEventHandler):
     def __init__(self, signal, csv_path):

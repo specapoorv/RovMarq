@@ -92,7 +92,6 @@ def main():
     bridge.frequency_updated.connect(window.update_frequency)
     bridge.noise_updated.connect(window.update_noise)
     bridge.toast_signal.connect(window.show_toast)
-
     window.send_signal.connect(bridge.send_handler)
     window.kill_signal.connect(bridge.kill_handler) #for kill switch
     window.colour_signal.connect(bridge.colour_override_handler)

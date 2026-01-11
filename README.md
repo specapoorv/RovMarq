@@ -21,6 +21,13 @@ RovMarq is a PySide6-based GUI application designed to coordinate and control sy
    pip install -r requirements.txt
    ```
 
+4. generate ssh-key on your laptop (to enable send feature)
+   ```bash
+   ssh-keygen -t ed25519
+   ssh-copy-id orin@10.42.0.253
+   ```
+   this will create private and public key in your laptop and you are just sending it to orin so that it wont ask for password while doing scp 
+
 
 ---
 

@@ -14,6 +14,7 @@ from backend.csv_manager import CSVLogger
 from backend.qwebchannel import MapBackend
 from pathlib import Path
 import os
+from pyqttoast import Toast, ToastPreset, ToastPosition
 
 
 class MainWindow(QMainWindow):
@@ -180,3 +181,19 @@ class MainWindow(QMainWindow):
     def send_button_clicked(self):
         print("Sending the waypoints file to orin....")
         self.send_signal.emit(True)
+
+    ### TOAST POPUP 
+    def show_toast(self, message, title, duration, preset):
+        toast = Toast(self)
+        toast.setDuration(duration)
+        Toast.setPosition(ToastPosition.TOP_RIGHT)
+        toast.setMinimumWidth(100)
+        toast.setMaximumWidth(350)
+        toast.setMinimumHeight(50)
+        toast.setMaximumHeight(120)
+        toast.setTitle(title)
+        toast.setText(message)
+        toast.applyPreset(preset)
+        toast.show()
+        toast.raise_()
+        toast.activateWindow()

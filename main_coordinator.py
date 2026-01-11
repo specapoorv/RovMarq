@@ -9,6 +9,7 @@ from frontend.Qwindow import MainWindow            # Ui logic
 from backend.bridge import ROSQtBridge             #ROSQt bridge
 from PySide6.QtCore import QTimer
 from backend.term import SSHSession
+from backend.toast import Notifier
 import subprocess
 import os
 
@@ -77,7 +78,6 @@ def main():
     # )
     # influx_writer.start()  # start writer thread
 
-
     bridge.gps_updated.connect(window.update_gps)
     bridge.yaw_updated.connect(window.update_yaw)
     bridge.odom_updated.connect(window.update_odom)
@@ -91,6 +91,7 @@ def main():
     bridge.csv_changed.connect(window.load_waypoints)
     bridge.frequency_updated.connect(window.update_frequency)
     bridge.noise_updated.connect(window.update_noise)
+    bridge.toast_signal.connect(window.show_toast)
 
     window.send_signal.connect(bridge.send_handler)
     window.kill_signal.connect(bridge.kill_handler) #for kill switch
@@ -100,8 +101,6 @@ def main():
     window.contrast_signal.connect(lambda cam, val: bridge.cam_setting_handler(cam, "contrast", val))
     window.zoom_signal.connect(lambda cam, val: bridge.cam_setting_handler(cam, "zoom", val))
   
-
-        # --- Periodic waypoint refresh ---
     refresh_timer = QTimer()
     refresh_timer.setInterval(1000)  # ms (adjust if needed)
     refresh_timer.timeout.connect(window.load_waypoints)

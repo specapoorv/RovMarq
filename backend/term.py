@@ -4,6 +4,38 @@ import threading
 import time
 import select
 import re
+import subprocess
+
+def scp_async(src, dst, on_done=print, on_error=print):
+    def worker():
+        try:
+            proc = subprocess.Popen(
+                [
+                    "scp",
+                    "-o", "ConnectTimeout=3",
+                    "-o", "BatchMode=yes",
+                    src,
+                    dst,
+                ],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+            )
+
+            stdout, stderr = proc.communicate(timeout=5)
+
+            if proc.returncode == 0:
+                on_done("[SCP] Transfer complete")
+            else:
+                on_error(stderr.strip() or f"[SCP] Failed (code {proc.returncode})")
+
+        except subprocess.TimeoutExpired:
+            proc.kill()
+            on_error("[SCP] Timeout")
+        except Exception as e:
+            on_error(str(e))
+
+    threading.Thread(target=worker, daemon=True).start()
 
 
 class SSHSession:
@@ -136,3 +168,6 @@ class SSHSession:
             os.close(self.fd)
         except OSError:
             pass
+    
+
+

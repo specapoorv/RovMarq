@@ -20,7 +20,10 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import time
 from backend.csv_manager import CSVLogger
-from backend.term import SSHSession
+from backend.term import SSHSession, scp_async
+from pyqttoast import Toast, ToastPreset
+import threading
+
 
 ssh = SSHSession(
     host="10.42.0.51",
@@ -29,6 +32,32 @@ ssh = SSHSession(
 )
 
 time.sleep(3)
+
+
+def toast_success(self, message, title="Success", duration=3000):
+    self.toast_signal.emit(
+        message,
+        title,
+        duration,
+        ToastPreset.SUCCESS_DARK
+    )
+
+def toast_error(self, message, title="Error", duration=3000):
+    self.toast_signal.emit(
+        message,
+        title,
+        duration,
+        ToastPreset.ERROR_DARK
+    )
+
+def toast_info(self, message, title="Info", duration=2500):
+    self.toast_signal.emit(
+        message,
+        title,
+        duration,
+        ToastPreset.INFO_DARK
+    )
+
 
 class CSVHandler(FileSystemEventHandler):
     def __init__(self, signal, csv_path):
@@ -71,6 +100,8 @@ class ROSQtBridge(Node, QObject):
     encoder_angles_updated = Signal(float, float, float, float)
     frequency_updated = Signal(float)
     noise_updated = Signal(float)
+    toast_signal = Signal(str, str, int, object)  # message, title, duration, preset
+
 
     csv_changed = Signal(str)
 
@@ -102,7 +133,7 @@ class ROSQtBridge(Node, QObject):
             reliability=ReliabilityPolicy.RELIABLE
         )
 
-        self.create_subscription(NavSatFix, "/mobile_sensor/gps", self.gps_callback, 10)
+        self.create_subscription(NavSatFix, "/gps_fix", self.gps_callback, 10)
         self.create_subscription(Float64, "/global_north", self.yaw_callback, 10)
         self.create_subscription(Odometry, "/zed/zed_node/odom", self.odom_callback, self.best_effort)
         self.create_subscription(Float32, "/battery_topic", self.battery_callback, 10)
@@ -177,21 +208,71 @@ class ROSQtBridge(Node, QObject):
             pwm_msg.data = [0, 0, 0, 0, 0, 0, 0, 0]
             self.motor_publisher.publish(pwm_msg)
 
-    
     def send_handler(self, sent: bool):
         if sent:
-            pass
-        # Add the functionality here i guess or change
+            #on done and on error functions should be init first before scp async 
+            def on_done(msg):
+                self.toast_signal.emit("Waypoints sent successfully!", "SCP Complete", 3000, ToastPreset.SUCCESS_DARK)
+
+            def on_error(err):
+                self.toast_signal.emit(f"Failed to send waypoints:\n{err}", "SCP Failed", 3000, ToastPreset.ERROR_DARK)
+
+            scp_async(
+                src="push_into_ananth.csv",
+                dst="orin@10.42.0.253:/home/orin/",
+                on_done=on_done,
+                on_error=on_error
+            )
 
     def colour_override_handler(self, colour_name):
-        # subprocess.run(['sshpass -p "anveshak" ssh orin@10.42.0.253', "echo 'hello'", f"ros2 param set /yolo_publisher colour_override {colour_name}", "exit"], shell=True)
-        print(f"[BACKEND] setting parameter {colour_name}")
-        # ssh.run('echo hello')
-        # ssh.run('ros2 topic list')
-        # time.sleep(2)
-        subprocess.run(f'ros2 param set /yolo_publisher colour_override {colour_name}')
-        # subprocess.run("exit", shell=True)
-    
+        def worker():
+            cmd = (
+            "source /opt/ros/humble/setup.bash && "
+            f"ros2 param set /yolo_publisher colour_override {colour_name}" )
+            
+            try:
+                result = subprocess.run(
+                    cmd,
+                    shell=True,
+                    executable="/bin/bash",
+                    capture_output=True,
+                    text=True,
+                    timeout=3.0
+                )
+
+                if result.returncode == 0:
+                    self.toast_signal.emit(
+                        f"Colour set to {colour_name}",
+                        "YOLO Node Param Updated",
+                        2000,
+                        ToastPreset.SUCCESS_DARK
+                    )
+                else:
+                    self.toast_signal.emit(
+                        result.stderr,
+                        "YOLO Node Error",
+                        3000,
+                        ToastPreset.ERROR_DARK
+                    )
+
+            except subprocess.TimeoutExpired:
+                self.toast_signal.emit(
+                    "ROS command timed out.\nRestart ros2 daemon.",
+                    "ROS Hung",
+                    4000,
+                    ToastPreset.ERROR_DARK
+                )
+
+            except Exception as e:
+                self.toast_signal.emit(
+                    str(e),
+                    "Unexpected Error",
+                    4000,
+                    ToastPreset.ERROR_DARK
+                )
+
+        threading.Thread(target=worker, daemon=True).start()
+
     def cam_setting_handler(self, cam_index, type, value):
         device_id = cam_index - 1
         device = f"/dev/video{device_id}"
@@ -203,7 +284,7 @@ class ROSQtBridge(Node, QObject):
         elif type == "zoom":
             ctrl = "zoom_absolute"
         else:
-            print(f"Unknown camera setting type: {type}")
+            print(f"[CAM] Unknown camera setting: {type}")
             return
 
         cmd = f"v4l2-ctl -d {device} -c {ctrl}={value}"
@@ -212,9 +293,7 @@ class ROSQtBridge(Node, QObject):
         try:
             ssh.run(cmd)
         except Exception as e:
-            print(f"Failed to run camera command: {e}")
-
-        
+            print(f"[CAM ERROR] {e}")
 
     def steering_callback(self, msg):
         data = msg.data
@@ -230,6 +309,20 @@ class ROSQtBridge(Node, QObject):
         self.autolog_flag = checked
 
     def autolog_waypoint(self):
+        if self.gps_timestamp is None:
+            return
+
+        if (time.time() - self.gps_timestamp) > 3.0:
+            print("gps data stale, no new message received from last 3 seconds")
+            self.latest_gps = None
+
+            self.toast_signal.emit(
+                "GPS messages not received.\nCheck GPS node / connection.",
+                "GPS Error",
+                5000,
+                ToastPreset.ERROR_DARK
+                )
+
         if not self.autolog_flag:
             print("STOPPED LOGGING, too much cock you are showing ah")
             return
@@ -237,15 +330,6 @@ class ROSQtBridge(Node, QObject):
             print("autologgin on")
 
         
-        # if self.gps_timestamp or self.vel_timestamp is None:
-        #     return
-        
-        # if (time.time() - self.gps_timestamp) or (time.time() - self.vel_timestamp) > 1.0:
-        #     self.latest_gps = None
-        #     self.vel = None
-
-        # if self.latest_gps or self.vel is None:
-        #     return
         if self.latest_gps is None:
             return
         
@@ -254,10 +338,9 @@ class ROSQtBridge(Node, QObject):
         new_id = self.csv_logger.add_marker(
             lat=lat,
             lon=lon,
-            label="waypoint"   # visual / semantic label only
+            label="waypoint" 
         )
 
-        # 2. Connect to previous auto-logged marker
         if self.last_auto_wp_id is not None:
             self.csv_logger.add_connection(self.last_auto_wp_id, new_id)
 

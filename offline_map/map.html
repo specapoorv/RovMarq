@@ -111,14 +111,31 @@
   });
 
   // ---------------- Map Setup ----------------
-  const map = L.map("map", { minZoom: 2, maxZoom: 24 }).setView([12.9916, 80.2346], 16);
+  const map = L.map("map", { minZoom: 2, maxZoom: 24 }).setView([13.349584, 74.791522], 16);
 
-  L.tileLayer('OSMPublicTransport/{z}/{x}/{y}.png', {
-    maxZoom: 24,
-    maxNativeZoom: 19,
-    minZoom: 0,
-    attribution: 'ANVESHAK'
-  }).addTo(map);
+  
+  // L.tileLayer('OSMPublicTransport/{z}/{x}/{y}.png', {
+  //   maxZoom: 24,
+  //   maxNativeZoom: 19,
+  //   minZoom: 0,
+  //   attribution: 'ANVESHAK'
+  // }).addTo(map);
+  
+
+  const imageUrl = "ircground-main.png";
+  // Example: 256x256 px PNG at zoom z
+  const latTop = 13.351414;      // top edge latitude
+  const lonLeft = 74.790075;      // left edge longitude
+  const latBottom = 13.348914;    // bottom edge latitude
+  const lonRight = 74.792739;     // right edge longitude
+
+
+  const imageBounds = [
+    [latTop, lonLeft],       // NW corner
+    [latBottom, lonRight]    // SE corner
+  ];
+
+  L.imageOverlay(imageUrl, imageBounds).addTo(map);
 
   map.getContainer().addEventListener("contextmenu", e => e.preventDefault());
 
@@ -193,7 +210,7 @@
   }
 
   // ---------------- ROVER MARKER ----------------
-  const roverMarker = L.marker([12.992152, 80.232440], { icon: createRoverIcon(map.getZoom(), 0) }).addTo(map);
+  const roverMarker = L.marker([13.349584, 74.791522], { icon: createRoverIcon(map.getZoom(), 0) }).addTo(map);
 
   function updateRoverPosition(lat, lon) {
     roverMarker.setLatLng([lat, lon]);

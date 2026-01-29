@@ -8,8 +8,6 @@ from PySide6.QtCore import Qt
 from frontend.Qwindow import MainWindow            # Ui logic
 from backend.bridge import ROSQtBridge             #ROSQt bridge
 from PySide6.QtCore import QTimer
-from backend.term import SSHSession
-from backend.toast import Notifier
 import subprocess
 import os
 

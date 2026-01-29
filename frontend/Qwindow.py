@@ -7,7 +7,7 @@ import sys
 from PySide6.QtWidgets import QApplication, QMainWindow, QHeaderView
 from PySide6.QtCore import Signal
 import math
-from PySide6.QtCore import QUrl
+from PySide6.QtCore import QUrl, Qt
 from PySide6.QtWebChannel import QWebChannel
 from components.csvFileComponent import csvFileComponent
 from backend.csv_manager import CSVLogger
@@ -147,8 +147,11 @@ class MainWindow(QMainWindow):
         self.ui.noiseValueLabel.setText(f"{noise}")
 
     def on_brightness_changed(self, cam_id, value):
-        print(f"Brightness cam {cam_id}: {value}")
-        self.brightness_signal.emit(cam_id, value)
+        # scale 0–100 → 0–255
+        brightness_255 = int(value * 255 / 100)
+
+        print(f"Brightness cam {cam_id}: {brightness_255}")
+        self.brightness_signal.emit(cam_id, brightness_255)
 
     def on_contrast_changed(self, cam_id, value):
         print(f"Contrast cam {cam_id}: {value}")
@@ -194,6 +197,16 @@ class MainWindow(QMainWindow):
         toast.setTitle(title)
         toast.setText(message)
         toast.applyPreset(preset)
+        toast.setWindowFlags(
+            Qt.Tool |
+            Qt.FramelessWindowHint |
+            Qt.WindowStaysOnTopHint |
+            Qt.WindowDoesNotAcceptFocus
+        )
+
+        toast.setAttribute(Qt.WA_ShowWithoutActivating)
+        toast.setAttribute(Qt.WA_X11DoNotAcceptFocus)
+
         toast.show()
         toast.raise_()
         toast.activateWindow()

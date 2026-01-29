@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'guiMain.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.9.2
+## Created by: Qt User Interface Compiler version 6.10.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -644,14 +644,6 @@ class Ui_guiMainWindow(object):
 "}")
         self.gridLayout_3 = QGridLayout(self.CurrentRoverStatus)
         self.gridLayout_3.setObjectName(u"gridLayout_3")
-        self.OmegaNameLabel = QLabel(self.CurrentRoverStatus)
-        self.OmegaNameLabel.setObjectName(u"OmegaNameLabel")
-        self.OmegaNameLabel.setStyleSheet(u"color: rgb(119, 118, 123);\n"
-"font: 1000 18pt \"FreeMono\";\n"
-"qproperty-alignment: AlignCenter;")
-
-        self.gridLayout_3.addWidget(self.OmegaNameLabel, 2, 0, 1, 1)
-
         self.ConfigValueLabel = QLabel(self.CurrentRoverStatus)
         self.ConfigValueLabel.setObjectName(u"ConfigValueLabel")
         self.ConfigValueLabel.setStyleSheet(u"color: rgb(119, 118, 123);\n"
@@ -660,13 +652,53 @@ class Ui_guiMainWindow(object):
 
         self.gridLayout_3.addWidget(self.ConfigValueLabel, 3, 1, 1, 1)
 
-        self.frequencyValueLabel = QLabel(self.CurrentRoverStatus)
-        self.frequencyValueLabel.setObjectName(u"frequencyValueLabel")
-        self.frequencyValueLabel.setStyleSheet(u"color: rgb(119, 118, 123);\n"
+        self.OmegaNameLabel = QLabel(self.CurrentRoverStatus)
+        self.OmegaNameLabel.setObjectName(u"OmegaNameLabel")
+        self.OmegaNameLabel.setStyleSheet(u"color: rgb(119, 118, 123);\n"
+"font: 1000 18pt \"FreeMono\";\n"
+"qproperty-alignment: AlignCenter;")
+
+        self.gridLayout_3.addWidget(self.OmegaNameLabel, 2, 0, 1, 1)
+
+        self.ModeNameLabel = QLabel(self.CurrentRoverStatus)
+        self.ModeNameLabel.setObjectName(u"ModeNameLabel")
+        self.ModeNameLabel.setStyleSheet(u"color: rgb(119, 118, 123);\n"
+"font: 1000 18pt \"FreeMono\";\n"
+"qproperty-alignment: AlignCenter;")
+
+        self.gridLayout_3.addWidget(self.ModeNameLabel, 0, 0, 1, 1)
+
+        self.GPSNameLabel_2 = QLabel(self.CurrentRoverStatus)
+        self.GPSNameLabel_2.setObjectName(u"GPSNameLabel_2")
+        self.GPSNameLabel_2.setStyleSheet(u"color: rgb(119, 118, 123);\n"
+"font: 1000 18pt \"FreeMono\";\n"
+"qproperty-alignment: AlignCenter;")
+
+        self.gridLayout_3.addWidget(self.GPSNameLabel_2, 5, 0, 1, 1)
+
+        self.VelocityNameLabel = QLabel(self.CurrentRoverStatus)
+        self.VelocityNameLabel.setObjectName(u"VelocityNameLabel")
+        self.VelocityNameLabel.setStyleSheet(u"color: rgb(119, 118, 123);\n"
+"font: 1000 18pt \"FreeMono\";\n"
+"qproperty-alignment: AlignCenter;")
+
+        self.gridLayout_3.addWidget(self.VelocityNameLabel, 1, 0, 1, 1)
+
+        self.ModeValueLabel = QLabel(self.CurrentRoverStatus)
+        self.ModeValueLabel.setObjectName(u"ModeValueLabel")
+        self.ModeValueLabel.setStyleSheet(u"color: rgb(119, 118, 123);\n"
 "font: 18pt \"FreeMono\";\n"
 "qproperty-alignment: AlignCenter;")
 
-        self.gridLayout_3.addWidget(self.frequencyValueLabel, 7, 1, 1, 1)
+        self.gridLayout_3.addWidget(self.ModeValueLabel, 0, 1, 1, 1)
+
+        self.CurrentSettingNameLabel = QLabel(self.CurrentRoverStatus)
+        self.CurrentSettingNameLabel.setObjectName(u"CurrentSettingNameLabel")
+        self.CurrentSettingNameLabel.setStyleSheet(u"color: rgb(119, 118, 123);\n"
+"font: 1000 18pt \"FreeMono\";\n"
+"qproperty-alignment: AlignCenter;")
+
+        self.gridLayout_3.addWidget(self.CurrentSettingNameLabel, 3, 0, 1, 1)
 
         self.GPSNameLabel = QLabel(self.CurrentRoverStatus)
         self.GPSNameLabel.setObjectName(u"GPSNameLabel")
@@ -684,29 +716,13 @@ class Ui_guiMainWindow(object):
 
         self.gridLayout_3.addWidget(self.GPSValuesLabel, 4, 1, 1, 1)
 
-        self.ModeNameLabel = QLabel(self.CurrentRoverStatus)
-        self.ModeNameLabel.setObjectName(u"ModeNameLabel")
-        self.ModeNameLabel.setStyleSheet(u"color: rgb(119, 118, 123);\n"
-"font: 1000 18pt \"FreeMono\";\n"
-"qproperty-alignment: AlignCenter;")
-
-        self.gridLayout_3.addWidget(self.ModeNameLabel, 0, 0, 1, 1)
-
-        self.ModeValueLabel = QLabel(self.CurrentRoverStatus)
-        self.ModeValueLabel.setObjectName(u"ModeValueLabel")
-        self.ModeValueLabel.setStyleSheet(u"color: rgb(119, 118, 123);\n"
+        self.VelocityValueLabel = QLabel(self.CurrentRoverStatus)
+        self.VelocityValueLabel.setObjectName(u"VelocityValueLabel")
+        self.VelocityValueLabel.setStyleSheet(u"color: rgb(119, 118, 123);\n"
 "font: 18pt \"FreeMono\";\n"
 "qproperty-alignment: AlignCenter;")
 
-        self.gridLayout_3.addWidget(self.ModeValueLabel, 0, 1, 1, 1)
-
-        self.OdomValueLabel = QLabel(self.CurrentRoverStatus)
-        self.OdomValueLabel.setObjectName(u"OdomValueLabel")
-        self.OdomValueLabel.setStyleSheet(u"color: rgb(119, 118, 123);\n"
-"font: 14pt \"FreeMono\";\n"
-"qproperty-alignment: AlignCenter;")
-
-        self.gridLayout_3.addWidget(self.OdomValueLabel, 6, 1, 1, 1)
+        self.gridLayout_3.addWidget(self.VelocityValueLabel, 1, 1, 1, 1)
 
         self.OmegaValueLabel = QLabel(self.CurrentRoverStatus)
         self.OmegaValueLabel.setObjectName(u"OmegaValueLabel")
@@ -716,61 +732,13 @@ class Ui_guiMainWindow(object):
 
         self.gridLayout_3.addWidget(self.OmegaValueLabel, 2, 1, 1, 1)
 
-        self.OdomNameLabel = QLabel(self.CurrentRoverStatus)
-        self.OdomNameLabel.setObjectName(u"OdomNameLabel")
-        self.OdomNameLabel.setStyleSheet(u"color: rgb(119, 118, 123);\n"
-"font: 1000 18pt \"FreeMono\";\n"
+        self.GPSValuesLabel_2 = QLabel(self.CurrentRoverStatus)
+        self.GPSValuesLabel_2.setObjectName(u"GPSValuesLabel_2")
+        self.GPSValuesLabel_2.setStyleSheet(u"color: rgb(119, 118, 123);\n"
+"font: 14pt \"FreeMono\";\n"
 "qproperty-alignment: AlignCenter;")
 
-        self.gridLayout_3.addWidget(self.OdomNameLabel, 6, 0, 1, 1)
-
-        self.VelocityValueLabel = QLabel(self.CurrentRoverStatus)
-        self.VelocityValueLabel.setObjectName(u"VelocityValueLabel")
-        self.VelocityValueLabel.setStyleSheet(u"color: rgb(119, 118, 123);\n"
-"font: 18pt \"FreeMono\";\n"
-"qproperty-alignment: AlignCenter;")
-
-        self.gridLayout_3.addWidget(self.VelocityValueLabel, 1, 1, 1, 1)
-
-        self.VelocityNameLabel = QLabel(self.CurrentRoverStatus)
-        self.VelocityNameLabel.setObjectName(u"VelocityNameLabel")
-        self.VelocityNameLabel.setStyleSheet(u"color: rgb(119, 118, 123);\n"
-"font: 1000 18pt \"FreeMono\";\n"
-"qproperty-alignment: AlignCenter;")
-
-        self.gridLayout_3.addWidget(self.VelocityNameLabel, 1, 0, 1, 1)
-
-        self.CurrentSettingNameLabel = QLabel(self.CurrentRoverStatus)
-        self.CurrentSettingNameLabel.setObjectName(u"CurrentSettingNameLabel")
-        self.CurrentSettingNameLabel.setStyleSheet(u"color: rgb(119, 118, 123);\n"
-"font: 1000 18pt \"FreeMono\";\n"
-"qproperty-alignment: AlignCenter;")
-
-        self.gridLayout_3.addWidget(self.CurrentSettingNameLabel, 3, 0, 1, 1)
-
-        self.frequencyNameLabel = QLabel(self.CurrentRoverStatus)
-        self.frequencyNameLabel.setObjectName(u"frequencyNameLabel")
-        self.frequencyNameLabel.setStyleSheet(u"color: rgb(119, 118, 123);\n"
-"font: 1000 18pt \"FreeMono\";\n"
-"qproperty-alignment: AlignCenter;")
-
-        self.gridLayout_3.addWidget(self.frequencyNameLabel, 7, 0, 1, 1)
-
-        self.noiseValueLabel = QLabel(self.CurrentRoverStatus)
-        self.noiseValueLabel.setObjectName(u"noiseValueLabel")
-        self.noiseValueLabel.setStyleSheet(u"color: rgb(119, 118, 123);\n"
-"font: 18pt \"FreeMono\";\n"
-"qproperty-alignment: AlignCenter;")
-
-        self.gridLayout_3.addWidget(self.noiseValueLabel, 8, 1, 1, 1)
-
-        self.noiseNameLabel = QLabel(self.CurrentRoverStatus)
-        self.noiseNameLabel.setObjectName(u"noiseNameLabel")
-        self.noiseNameLabel.setStyleSheet(u"color: rgb(119, 118, 123);\n"
-"font: 1000 18pt \"FreeMono\";\n"
-"qproperty-alignment: AlignCenter;")
-
-        self.gridLayout_3.addWidget(self.noiseNameLabel, 8, 0, 1, 1)
+        self.gridLayout_3.addWidget(self.GPSValuesLabel_2, 5, 1, 1, 1)
 
         self.NetMapWidgetWidget = NetMapWidget(self.centralwidget)
         self.NetMapWidgetWidget.setObjectName(u"NetMapWidgetWidget")
@@ -921,22 +889,18 @@ class Ui_guiMainWindow(object):
         self.zoomLabel4.setText(QCoreApplication.translate("guiMainWindow", u"Zoom", None))
         self.contrastLabel4.setText(QCoreApplication.translate("guiMainWindow", u"Contrast", None))
         self.CurrentRoverStatus.setTitle(QCoreApplication.translate("guiMainWindow", u"Rover Info", None))
-        self.OmegaNameLabel.setText(QCoreApplication.translate("guiMainWindow", u"Omega", None))
         self.ConfigValueLabel.setText(QCoreApplication.translate("guiMainWindow", u"DRIVE", None))
-        self.frequencyValueLabel.setText(QCoreApplication.translate("guiMainWindow", u"? GHz", None))
-        self.GPSNameLabel.setText(QCoreApplication.translate("guiMainWindow", u"GPS", None))
-        self.GPSValuesLabel.setText(QCoreApplication.translate("guiMainWindow", u"-", None))
+        self.OmegaNameLabel.setText(QCoreApplication.translate("guiMainWindow", u"Omega", None))
         self.ModeNameLabel.setText(QCoreApplication.translate("guiMainWindow", u"Mode", None))
-        self.ModeValueLabel.setText(QCoreApplication.translate("guiMainWindow", u"0", None))
-        self.OdomValueLabel.setText(QCoreApplication.translate("guiMainWindow", u"-", None))
-        self.OmegaValueLabel.setText(QCoreApplication.translate("guiMainWindow", u"0.0", None))
-        self.OdomNameLabel.setText(QCoreApplication.translate("guiMainWindow", u"Odom", None))
-        self.VelocityValueLabel.setText(QCoreApplication.translate("guiMainWindow", u"0.0", None))
+        self.GPSNameLabel_2.setText(QCoreApplication.translate("guiMainWindow", u"LON", None))
         self.VelocityNameLabel.setText(QCoreApplication.translate("guiMainWindow", u"Velocity", None))
+        self.ModeValueLabel.setText(QCoreApplication.translate("guiMainWindow", u"0", None))
         self.CurrentSettingNameLabel.setText(QCoreApplication.translate("guiMainWindow", u"Config", None))
-        self.frequencyNameLabel.setText(QCoreApplication.translate("guiMainWindow", u"Frequency", None))
-        self.noiseValueLabel.setText(QCoreApplication.translate("guiMainWindow", u"-", None))
-        self.noiseNameLabel.setText(QCoreApplication.translate("guiMainWindow", u"Noise", None))
+        self.GPSNameLabel.setText(QCoreApplication.translate("guiMainWindow", u"LAT", None))
+        self.GPSValuesLabel.setText(QCoreApplication.translate("guiMainWindow", u"-", None))
+        self.VelocityValueLabel.setText(QCoreApplication.translate("guiMainWindow", u"0.0", None))
+        self.OmegaValueLabel.setText(QCoreApplication.translate("guiMainWindow", u"0.0", None))
+        self.GPSValuesLabel_2.setText(QCoreApplication.translate("guiMainWindow", u"-", None))
         self.KillSwitchButton.setText(QCoreApplication.translate("guiMainWindow", u"Kill Switch", None))
         self.autologButton.setText(QCoreApplication.translate("guiMainWindow", u"AUTOLOG", None))
         self.sendButton.setText(QCoreApplication.translate("guiMainWindow", u"SEND", None))

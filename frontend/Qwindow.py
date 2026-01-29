@@ -105,7 +105,8 @@ class MainWindow(QMainWindow):
             print("Error loading waypoints:", e)
 
     def update_gps(self, latitude, longitude):
-        self.ui.GPSValuesLabel.setText(f"{latitude:.6f}, {longitude:.6f}")
+        self.ui.GPSValuesLabel.setText(f"{latitude:.6f}")
+        self.ui.GPSValuesLabel_2.setText(f"{longitude:.6f}")
         
         js = f"updateRoverPosition({latitude}, {longitude});"
         self.ui.webEngineView.page().runJavaScript(js)
